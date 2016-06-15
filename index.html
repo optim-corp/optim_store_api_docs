@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>OPTiM Store API Docs</title>
+
+  <meta name="author" content="OPTiM Inc." />
+
+  
+  <meta name="description" content="Getting Started">
+  
+
+  
+    
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+  <!-- Facebook OpenGraph tags -->
+  <meta property="og:title" content="OPTiM Store API Docs" />
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="/optim_store_api_docs//" />
+  
+
+  
+  <meta property="og:image" content="/optim_store_api_docs//img/avatar-icon.png" />
+  
+
+</head>
+
+
+  <body>
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/optim_store_api_docs/">OPTiM Store API Docs</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+<a href="/optim_store_api_docs/">Back to TOP</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+  
+  <div class="avatar-container">
+    <div class="avatar-img-border">
+      <a href="/optim_store_api_docs/ ">
+        <img class="avatar-img" src="/optim_store_api_docs/img/avatar-icon.png" />
+    </a>
+    </div>
+  </div>
+  
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-heading">
+          <h1>OPTiM Store API Docs</h1>
+      
+        
+            <hr class="small">
+            <span class="page-subheading">Getting Started</span>
+      
+      
+      
+      
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <p>本仕様書では、OPTiM Store に登録される SaaS サービス事業者様向けの、OPTiM Store 連携の全体フロー概要を説明します。</p>
+
+<p>OPTiM Store と御社サービスとの連携は、以下の5つの Step に大別されます。</p>
+
+<ul>
+  <li><a href="#contract-setup">Step 1. ユーザー企業によるサービス購入直後の契約開始処理 (Tenant Contract Setup)</a></li>
+  <li><a href="#scim-client-setup">Step 2. プロビジョニング初期設定 (SCIM Client Setup)</a></li>
+  <li><a href="#connect-client-setup">Step 3. ID 連携初期設定 (OpenID Connect Client Setup)</a></li>
+  <li><a href="#scim-provisioning">Step 4. ライセンス・ユーザー属性情報連携 (SCIM Provisioning)</a></li>
+  <li><a href="#connect-federation">Step 5. ID 連携 (OpenID Connect / SAML 2.0 Federation)</a></li>
+</ul>
+
+<p>Step 1-3 はユーザー企業様が御社サービスを利用開始される初回のみ実行される処理で、この処理を OPTiM Store API を使って自動化することで、ユーザー企業様が待ち時間なくスムーズに御社サービスを利用開始できるようになります。</p>
+
+<p>この処理の自動化実装はオプションであり、実装しない場合は OPTiM Store と御社サービスとの間の初期設定が書面やメールベースで行われます。</p>
+
+<p>Step 4-5 はそれ以降継続的に実施される処理であり、この部分は御社サービス側でも必ず実装していただく必要があります。</p>
+
+<p>上記の全体フローは以下の図のようになります。それぞれの詳細については後述します。</p>
+
+<p><img src="/optim_store_api_docs/img/whole-flow.png" alt="Whole Flow" /></p>
+
+<h2 id="contract-setup">ユーザー企業によるサービス購入直後の契約開始処理 (Tenant Contract Setup)</h2>
+
+<p>OPTiM Store 上でユーザー企業の担当者様が御社サービスを購入すると、OPTiM Store から御社サービス側に、契約開始リクエストが送信されます。</p>
+
+<p>この契約開始リクエストは、ユーザー企業ごとに、初回の1回ずつ発行されます。このリクエストを受け取りましたら、御社サービス側で当該ユーザー企業様向けテナントをご用意ください。</p>
+
+<p>契約開始処理についての詳細は <a href="/optim_store_api_docs/setup/contract">Tenant Contract Setup</a> をご覧ください。</p>
+
+<p>Contract API の利用が困難な場合には、契約開始処理は書面ベースやメールベースで行うことも可能ですが、その場合ユーザー企業様は購入してからサービス利用開始まで数営業日待つことになりますので、できる限り Contract API を利用した契約開始処理の自動化を推奨します。</p>
+
+<h2 id="scim-client-setup">プロビジョニング初期設定 (SCIM Client Setup)</h2>
+
+<p>プロビジョニングとは、OPTiM Store 側でユーザー企業担当者様がライセンス付与作業を行った場合に、当該ユーザー様に関するライセンスの追加・変更イベントを御社サービス側に通知する仕組みです。</p>
+
+<p>また、ライセンス情報だけでなく、Email アドレス等のユーザープロフィールの変更についても、プロビジョニングによって御社サービス側に通知されます。</p>
+
+<p>OPTiM Store では SCIM というプロトコルを用いてプロビジョニングを行います。</p>
+
+<p>契約開始直後に OPTiM Store から御社サービス側に SCIM Client 登録リクエストを投げますので、御社サービス側には SCIM Client 登録用の API を提供していただく必要があります。</p>
+
+<p>このプロビジョニング初期設定処理については <a href="/optim_store_api_docs/setup/scim">SCIM Client Setup</a> をご覧ください。</p>
+
+<p>なお契約開始処理を自動化されない場合は、こちらの処理についても書面 or メールベースで行うことになります。</p>
+
+<h2 id="connect-client-setup">ID 連携初期設定 (OpenID Connect Client Setup)</h2>
+
+<p>エンドユーザー様が OPTiM Store アカウントで御社サービスにログインするためには、御社サービス側で OPTiM Store との ID 連携処理を行っていただく必要があります。</p>
+
+<p>ID 連携のための仕組みとして、OPTiM Store では OpenID Connect と SAML という2つの仕組みを提供します。(SAML については、後日仕様公開予定です)</p>
+
+<p>OpenID Connect プロトコルに従って ID 連携を行うには、OpenID Connect Client 登録が必要になります。OPTiM Store では OpenID Connect Client 登録用の API を提供しています。</p>
+
+<p>契約開始直後に、この OpenID Connect Client 登録 API を用いて、ID 連携初期設定を行ってください。</p>
+
+<p>この ID 連携初期設定処理については <a href="/optim_store_api_docs/setup/connect">OpenID Connect Client Setup</a> をご覧ください。</p>
+
+<p>なお契約開始処理を自動化されない場合は、こちらの処理についても書面 or メールベースで行うことになります。</p>
+
+<h2 id="scim-provisioning">ライセンス・ユーザー属性情報連携 (SCIM Provisioning)</h2>
+
+<p>プロビジョニング初期設定および ID 連携初期設定が完了すると、ユーザー企業担当者様はエンドユーザー様へのライセンス付与処理が可能になります。</p>
+
+<p>ライセンス付与が行われると、その都度御社サービス側に SCIM プロトコルにしたがってユーザー追加・更新・削除通知が送られます。</p>
+
+<p>御社サービス側は、この通知を受けとるための SCIM API Server を実装し、受け取ったユーザー情報を該当する御社サービス側のテナントに反映させてください。</p>
+
+<p>SCIM API Server 実装方法については <a href="/optim_store_api_docs/provisioning/scim">SCIM Provisioning</a> をご覧ください。</p>
+
+<p>契約開始処理を自動化されない場合でも、<strong>こちらの処理の実装は必須です</strong>。</p>
+
+<h2 id="connect-federation">ID 連携 (OpenID Connect / SAML 2.0 Federation)</h2>
+
+<p>プロビジョニングが完了すると、OPTiM Store アカウントで御社サービスにログインすることが可能な状態になります。</p>
+
+<p>OpenID Connect や SAML を利用すると、OPTiM Store に認証されたユーザーの認証情報を、署名付きデータとして受け取ることができます。</p>
+
+<p>御社サービス側では、受け取ったデータを検証し、そこに含まれる御社側テナント情報および OPTiM Store ユーザー識別子を確認することで、当該ユーザーを御社サービス側のアカウントにログインさせることができます。</p>
+
+<p>ID 連携の実装方法については <a href="/optim_store_api_docs/federation/connect">OpenID Connect Federation</a> をご覧ください。(SAML 版は後日公開予定です)</p>
+
+<p>契約開始処理を自動化されない場合でも、<strong>こちらの処理の実装は必須です</strong>。</p>
+
+<h2 id="section">お問い合わせ</h2>
+
+<p>本 API の仕様や使い方に関するお問い合わせは <a href="https://www.optim.co.jp/store/developer/form/">こちら</a> のフォームよりお願いします。</p>
+
+<p>また、 OPTiM Store の詳細に関しましては <a href="https://www.optim.co.jp/store/">こちら</a> のサイトをご参照ください。</p>
+
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="https://github.com/optim-corp" title="GitHub">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+      
+      
+      
+      
+      
+        </ul>
+        <p class="copyright text-muted">
+      OPTiM Inc.
+      &nbsp;&bull;&nbsp;
+      2016
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="/optim_store_api_docs/"></a>
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="http://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+        if (typeof jQuery == 'undefined') {
+          document.write('<script src="/optim_store_api_docs/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+        }
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/main.js"></script>
+    
+  
+
+
+
+
+
+  
+  </body>
+</html>

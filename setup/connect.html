@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>OpenID Connect Client Setup</title>
+
+  <meta name="author" content="OPTiM Inc." />
+
+  
+  <meta name="description" content="OPTiM Store API Docs">
+  
+
+  
+    
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+  <!-- Facebook OpenGraph tags -->
+  <meta property="og:title" content="OpenID Connect Client Setup" />
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="/optim_store_api_docs//setup/connect" />
+  
+
+  
+  <meta property="og:image" content="/optim_store_api_docs//img/avatar-icon.png" />
+  
+
+</head>
+
+
+  <body>
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/optim_store_api_docs/">OPTiM Store API Docs</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+<a href="/optim_store_api_docs/">Back to TOP</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+  
+  <div class="avatar-container">
+    <div class="avatar-img-border">
+      <a href="/optim_store_api_docs/ ">
+        <img class="avatar-img" src="/optim_store_api_docs/img/avatar-icon.png" />
+    </a>
+    </div>
+  </div>
+  
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-heading">
+          <h1>OpenID Connect Client Setup</h1>
+      
+        
+            <hr class="small">
+            <span class="page-subheading">OPTiM Store API Docs</span>
+      
+      
+      
+      
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      
+<p>OpenID Connect Protocol に従い ID 連携を行うには、御社サービスは OPTiM Store を ID Provider とした OpenID Connect Relying Party になる必要があります。</p>
+
+<p>そのため、まずテナント契約直後に <strong>御社サービスから OPTiM Store に対して OpenID Connect Client を登録する必要があります</strong>。</p>
+
+<p>OPTiM Store では、<a href="https://tools.ietf.org/html/rfc7591">OAuth 2.0 Dynamic Client Registration Protocol</a> に準拠した形で OpenID Connect Client Registration Request を受け付けています。</p>
+
+<p>注) OPTiM Store から御社サービスに向けて SCIM Client Registration Request を送信する <a href="/optim_store_api_docs/setup/scim">SCIM Client Setup</a> とは逆方向のリクエストが送信される点に注意してください。</p>
+
+<h2 id="section">事前設定項目</h2>
+
+<p>以降、本ドキュメントでは、OPTiM Store の <strong>OpenID Connect Client Registration API Endpoint</strong> の URL を以下の値と仮定して説明を進めます。</p>
+
+<ul>
+  <li>https://optim-store.optim.co.jp/connect/clients</li>
+</ul>
+
+<p>また <a href="/optim_store_api_docs/setup/contract">Tenant Contract Setup</a> 時に御社サービス側で生成した RSA 秘密鍵を利用してリクエストに署名をする必要があるので、事前にテナント契約が成立している必要があります。</p>
+
+<h2 id="openid-connect-client-registration-request">OpenID Connect Client Registration Request</h2>
+
+<p>テナント契約が成立した後に、御社サービスから OPTiM Store の OpenID Connect Client Registration API Endpoint に以下のような JSON データを送ります。(実際には以下の JSON に JWS 仕様にしたがって署名したデータを送ります)</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp/connect/clients"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://your-service.example.com/connect/callback"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="json">リクエストJSONの各要素について</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>iss</strong></td>
+      <td>リクエスト発行者 (issuer) の識別子です。御社サービスの <strong>Contract Start API Endpoint URL</strong> となります。</td>
+    </tr>
+    <tr>
+      <td><strong>aud</strong></td>
+      <td>リクエスト受信者 (audience) の識別子です。OPTiM Store の <strong>OpenID Connect Client Registration API Endpoint URL</strong> となります。</td>
+    </tr>
+    <tr>
+      <td><strong>redirect_uris</strong></td>
+      <td>OPTiM Store で認証されたユーザーが御社サービスにリダイレクトされて返される際の Callback Endpoint URL です。特に複数の redirect_uri を使い分ける必要の無い場合は、要素数1の JSON Array としてください。</td>
+    </tr>
+    <tr>
+      <td><strong>iat</strong></td>
+      <td>リクエスト生成日時 (issued_at) を示す Unix Timestamp です。</td>
+    </tr>
+    <tr>
+      <td><strong>exp</strong></td>
+      <td>リクエストの有効期限 (expires_at) を示す Unix Timestamp です。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="section-1">署名付きリクエスト</h3>
+
+<p>実際の POST Body は、上記の JSON に御社サービス側の当該テナント契約に紐付いた RSA 秘密鍵で署名したものを <strong>contract_statement</strong> という key に wrap した JSON データになります。</p>
+
+<p>その時、署名に使用した鍵の ID (kid) を JWS Header の <strong>kid</strong> に指定してください。OPTiM Store はその <strong>kid</strong> をもとに対応するテナント契約を特定します。</p>
+
+<p><strong>JWS Header 例</strong></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"typ"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JWT"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"none"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3IH6dU6_3E3DO7J_qDIJuUcMpSBidlJOjRnKVZgB5Yk"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><strong>JWS Payload 例</strong></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp/connect/clients"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"redirect_uris"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"https://your-service.example.com/connect/callback"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><strong>署名付き JSON 例</strong></p>
+
+<pre><code class="language-jws">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjNJSDZkVTZfM0UzRE83Sl9xRElKdVVjTXBTQmlkbEpPalJuS1ZaZ0I1WWsifQ.eyJpc3MiOiJodHRwczovL3lvdXItc2VydmljZS5leGFtcGxlLmNvbS9jb250cmFjdC9hcGkiLCJhdWQiOiJ7eyBjb25uZWN0X3JlZ2lzdHJhdGlvbl9lbmRwb2ludCB9fSIsInJlZGlyZWN0X3VyaXMiOlsiaHR0cHM6Ly95b3VyLXNlcnZpY2UuZXhhbXBsZS5jb20vY29ubmVjdC9jYWxsYmFjayJdLCJpYXQiOjE0NjQwNTM3MDYsImV4cCI6MTQ2NDA1NDMwNn0.i2zqja0pr2CKY037wM79JEDmkAxa46bBum-ijiSHNE1BtLIQtuQxuh-VXA0R371vbCyIRo1O_NJDsviMkKMYE7-_HJ8LL7rxJNEqhc1itHplbyA9Ip1Hi2qlxZhHalU3Le91paN2P9jFpaj2jpMxpvM8ynGBdxzRpbtiEGBfSjCD0-PDPUb7B_15NLqdmRCtqf2vIA_JnErWk595R4esSNgvRicUqOFGhFnQ_Dtq-w5u2beSCWe9K0amA2wEjgpdkKcOj6RraNDxpxCge5BKQmhUXoe2rJRPcZsm7_ku7FdIdtcori3VJeU2UrEFApnnmglY0bItRdIoXzenJ_KzpQ
+</code></pre>
+
+<p><strong>Request Body 例</strong></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"software_statement"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjNJSDZkVTZfM0UzRE83Sl9xRElKdVVjTXBTQmlkbEpPalJuS1ZaZ0I1WWsifQ.eyJpc3MiOiJodHRwczovL3lvdXItc2VydmljZS5leGFtcGxlLmNvbS9jb250cmFjdC9hcGkiLCJhdWQiOiJ7eyBjb25uZWN0X3JlZ2lzdHJhdGlvbl9lbmRwb2ludCB9fSIsInJlZGlyZWN0X3VyaXMiOlsiaHR0cHM6Ly95b3VyLXNlcnZpY2UuZXhhbXBsZS5jb20vY29ubmVjdC9jYWxsYmFjayJdLCJpYXQiOjE0NjQwNTM3MDYsImV4cCI6MTQ2NDA1NDMwNn0.i2zqja0pr2CKY037wM79JEDmkAxa46bBum-ijiSHNE1BtLIQtuQxuh-VXA0R371vbCyIRo1O_NJDsviMkKMYE7-_HJ8LL7rxJNEqhc1itHplbyA9Ip1Hi2qlxZhHalU3Le91paN2P9jFpaj2jpMxpvM8ynGBdxzRpbtiEGBfSjCD0-PDPUb7B_15NLqdmRCtqf2vIA_JnErWk595R4esSNgvRicUqOFGhFnQ_Dtq-w5u2beSCWe9K0amA2wEjgpdkKcOj6RraNDxpxCge5BKQmhUXoe2rJRPcZsm7_ku7FdIdtcori3VJeU2UrEFApnnmglY0bItRdIoXzenJ_KzpQ"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>上記 JSON データを、御社サービスから OPTiM Store の OpenID Connect Client Registration API Endpoint に HTTP POST で送信してください。</p>
+
+<h4 id="section-2">リクエスト署名の生成</h4>
+
+<p>以下では Ruby の json-jwt gem を利用して、上記署名付き JSON の生成処理を行っています。</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'json/jwt'</span>
+
+<span class="n">private_key_pem</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">read</span><span class="p">(</span><span class="s1">'path/to/per-contract/rsa-private-key.pem'</span><span class="p">)</span>
+<span class="n">private_key</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">PKey</span><span class="o">::</span><span class="no">RSA</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">private_key_pem</span><span class="p">)</span>
+
+<span class="n">kid</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWK</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">private_key</span><span class="p">).</span><span class="nf">thumbprint</span>
+<span class="n">jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+  <span class="ss">iss: </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span>
+  <span class="ss">aud: </span><span class="s2">"https://optim-store.optim.co.jp/connect/clients"</span><span class="p">,</span>
+  <span class="ss">redirect_uris: </span><span class="p">[</span>
+    <span class="s2">"https://your-service.example.com/connect/callback"</span>
+  <span class="p">],</span>
+  <span class="ss">iat: </span><span class="mi">1464053706</span><span class="p">,</span>
+  <span class="ss">exp: </span><span class="mi">1464054306</span>
+<span class="p">)</span>
+
+<span class="n">jwt</span><span class="p">.</span><span class="nf">header</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">kid</span>
+<span class="n">jws</span> <span class="o">=</span> <span class="n">jwt</span><span class="p">.</span><span class="nf">sign</span><span class="p">(</span><span class="n">private_key</span><span class="p">)</span>
+<span class="nb">puts</span> <span class="n">jws</span><span class="p">.</span><span class="nf">to_s</span> <span class="c1"># =&gt; "eyJ..."</span>
+</code></pre>
+</div>
+
+<p>その他の JWT/JWS ライブラリを利用する場合は、各ライブラリのドキュメントを参照してください。</p>
+
+<h3 id="openid-connect-client-registration-response">OpenID Connect Client Registration Response</h3>
+
+<p>OPTiM Store 側でのリクエスト検証が成功すると、以下のような JSON Response が返されます。</p>
+
+<p>ここで発行された client_id &amp; client_secret は、後に OpenID Connect による ID 連携を行う際に必要になりますので、当該テナントに紐付けた形で保存しておいてください。</p>
+
+<p>各パラメータは 255 byte 以下の JSON String です。</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"client_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"37969af118b7a9e5aed8f7e7b6252ecd"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"client_secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1d966bb7eb7f8d6f5114e1cc04b0f7edb16f49e5f22843bf4bf640338fd6daec"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="https://github.com/optim-corp" title="GitHub">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+      
+      
+      
+      
+      
+        </ul>
+        <p class="copyright text-muted">
+      OPTiM Inc.
+      &nbsp;&bull;&nbsp;
+      2016
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="/optim_store_api_docs/"></a>
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="http://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+        if (typeof jQuery == 'undefined') {
+          document.write('<script src="/optim_store_api_docs/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+        }
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/main.js"></script>
+    
+  
+
+
+
+
+
+  
+  </body>
+</html>

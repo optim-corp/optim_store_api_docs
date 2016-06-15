@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Tenant Contract Setup</title>
+
+  <meta name="author" content="OPTiM Inc." />
+
+  
+  <meta name="description" content="OPTiM Store API Docs">
+  
+
+  
+    
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+  <!-- Facebook OpenGraph tags -->
+  <meta property="og:title" content="Tenant Contract Setup" />
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="/optim_store_api_docs//setup/contract" />
+  
+
+  
+  <meta property="og:image" content="/optim_store_api_docs//img/avatar-icon.png" />
+  
+
+</head>
+
+
+  <body>
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/optim_store_api_docs/">OPTiM Store API Docs</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+<a href="/optim_store_api_docs/">Back to TOP</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+  
+  <div class="avatar-container">
+    <div class="avatar-img-border">
+      <a href="/optim_store_api_docs/ ">
+        <img class="avatar-img" src="/optim_store_api_docs/img/avatar-icon.png" />
+    </a>
+    </div>
+  </div>
+  
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-heading">
+          <h1>Tenant Contract Setup</h1>
+      
+        
+            <hr class="small">
+            <span class="page-subheading">OPTiM Store API Docs</span>
+      
+      
+      
+      
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      
+<p>OPTiM Store のユーザー企業様が御社サービスを利用開始する際に、初回に OPTiM Store と御社サービスの間でテナント契約開始処理を行います。</p>
+
+<p>その際、<strong>御社サービス側に Tenant Contract API Endpoint をご用意いただく必要があります</strong>。当該 Endpoint URL は、OPTiM Store へのアプリ登録時に設定します。</p>
+
+<p>ここで交換された鍵は、後述の SCIM Client 登録や OpenID Connect Client / SAML Service Provider 登録を API 経由で自動化する際に必要になります。</p>
+
+<p>SCIM Client 登録および OpenID Connect Client / SAML Service Provider 登録を手動で行う場合には、この API Endpoint は不要です。</p>
+
+<h2 id="section">要素技術</h2>
+
+<p>本 API では、HTTP Request Body に署名付き JSON を付与した上で、御社サービス側の Tenant Contract API Endpoint に HTTP POST Request を送信します。</p>
+
+<p>署名付き JSON 生成のため、以下の仕様を利用しています。</p>
+
+<ul>
+  <li><a href="https://tools.ietf.org/html/rfc7519">JSON Web Token (JWT)</a>
+    <ul>
+      <li>JSON データを Token 化するための仕様です。</li>
+      <li>URL Safe な Encode 方式と、広く一般的に Token に必要となる属性の定義を行っています。</li>
+    </ul>
+  </li>
+  <li><a href="https://tools.ietf.org/html/rfc7515">JSON Web Signature (JWS)</a>
+    <ul>
+      <li>JWT 等の JSON データに署名を付与するための仕様です。</li>
+    </ul>
+  </li>
+  <li><a href="https://tools.ietf.org/html/rfc7517">JSON Web Key (JWK)</a>
+    <ul>
+      <li>公開鍵や秘密鍵を JSON 形式で表現するための仕様です。</li>
+    </ul>
+  </li>
+  <li><a href="https://tools.ietf.org/html/rfc7638">JSON Web Key (JWK) Thumbprint</a>
+    <ul>
+      <li>個々の JWK 鍵の識別子を重複なく生成する際などに利用する仕様です。</li>
+    </ul>
+  </li>
+</ul>
+
+<p>JWT と JWS に関しては、以下の翻訳版も参考にしてください。</p>
+
+<ul>
+  <li><a href="http://openid-foundation-japan.github.io/draft-ietf-oauth-json-web-token-11.ja.html">JWT (翻訳版)</a></li>
+  <li><a href="http://openid-foundation-japan.github.io/draft-ietf-jose-json-web-signature-14.ja.html">JWS (翻訳版)</a></li>
+  <li>JWK (翻訳版) #準備中</li>
+  <li>JSON Web Key (JWK) Thumbprint (翻訳版) #準備中</li>
+</ul>
+
+<p>御社サービス側では署名検証のため JWT/JWS ライブラリを利用することを推奨します。各言語ごとの JWT/JWS ライブラリは、以下のサイトにまとめられているので参考にしてください。</p>
+
+<ul>
+  <li><a href="https://jwt.io">JWT.io</a></li>
+</ul>
+
+<h2 id="section-1">事前設定項目</h2>
+<p>以降、本ドキュメントでは、OPTiM Store の URL を以下の値と仮定して説明を進めます。</p>
+
+<ul>
+  <li>https://optim-store.optim.co.jp</li>
+</ul>
+
+<p>OPTiM Store へのアプリ登録時に、御社サービス側の <strong>Tenant Contract API Endpoint</strong> を設定していただく必要があります。(HTTPS 必須)</p>
+
+<p>以降、本ドキュメントでは、御社サービス側の Tenant Contract API Endpoint を以下の値と仮定して説明を進めます。</p>
+
+<ul>
+  <li>https://your-service.example.com/contract/api</li>
+</ul>
+
+<p>また OPTiM Store から送られてくる Tenant Contract Setup Request の署名検証に利用するため、契約時に送付される URL から OPTiM Store の Public Key を取得しておいてください。</p>
+
+<p>以降、本ドキュメントでは、OPTiM Store の Public key URL を以下の値と仮定して説明を進めます。</p>
+
+<ul>
+  <li><a href="https://optim-store.optim.co.jp/jwks.json">https://optim-store.optim.co.jp/jwks.json</a></li>
+</ul>
+
+<p>この鍵は定期的に更新される可能性があるため、後述の署名付き JSON データに含まれる <strong>鍵 ID (kid)</strong> をもとに、必要に応じて上記 URL から鍵を動的に取得できるような実装をお願いします。</p>
+
+<p>なお、鍵更新は必ず <strong>kid</strong> の変更を伴うため、未知の <strong>kid</strong> を受け取るまでは御社サービス側で上記 URL から取得した鍵を無期限に cache していただいて構いません。</p>
+
+<h2 id="optim-store---">OPTiM Store -&gt; 御社サービスへのテナント契約開始リクエスト</h2>
+
+<p>契約開始時に、OPTiM Store から御社サービスの Tenant Contract API Endpoint に以下のような JSON データを送ります。(実際には以下の JSON に JWS 仕様にしたがって署名したデータが送られます)</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"company"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f46f9970c914af9a22491402aa9eedc4a9645f2d2a303a39867c304ba461c47f"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"株式会社 XXX"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"website"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://xxx.example.com"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"contact"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sysadmin@xxx.example.com"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"licence"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"pool"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"contract_jwk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0-B5HVIdHUu8cPMKSn3jwlA0ctof_ajNUoblnEjYWrI"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAB"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6JNHFtl3atob3u45Q23faw2mEAP4lOZO5PN5h-8Q_NfqRi2ADzHAdAM9BSEzSwqplAWKkr6Y9PLrWKvsgF6q6N-f3NHczaa2vfqt5CW4GiWBvPw2hZ9y2B2EzB76fIngTn43kE71p5u6jIWdflkmTEmKMVEmdC7KVRxoMQQkXiG-QU7Rw_Frr_OtGOnXXhxTrz1tyhm9FjmU1ImHZm2Rib5NEX4ghAAIJZswN8zN5tEyJiGg1aJ4BfYrS9AXEXQHaYJX9Kzbv-UqYGIiFHcP1MmK4ZqQ5Kp8x_k0IDA5DUc3ecDw0Axm_Arl1BP94YVPQob2D1Xgr6qYt-2Xp0uxyw"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sig"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="json-">リクエスト JSON の各要素について</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>iss</strong></td>
+      <td>リクエスト発行者 (issuer) の識別子です。OPTiM Store の URL となります。</td>
+    </tr>
+    <tr>
+      <td><strong>aud</strong></td>
+      <td>リクエスト受信者 (audience) の識別子です。御社サービスの <strong>Tenant Contract API Endpoint URL</strong> となります。</td>
+    </tr>
+    <tr>
+      <td><strong>company</strong></td>
+      <td>実際に御社サービスを利用される OPTiM Store ユーザー企業様の情報です。特に必要が無い場合は無視していただいても結構です。</td>
+    </tr>
+    <tr>
+      <td><strong>licence</strong></td>
+      <td>購入ライセンス数等の情報です。現時点ではライセンス数のみを含みます。</td>
+    </tr>
+    <tr>
+      <td><strong>contract_jwk</strong></td>
+      <td>各テナント契約ごとに OPTiM 側で生成される RSA 鍵ペアの公開鍵です。契約開始直後 Provisioning　の自動設定を行う際に必要になります。</td>
+    </tr>
+    <tr>
+      <td><strong>iat</strong></td>
+      <td>リクエスト生成日時 (issued_at) を示す Unix Timestamp です。</td>
+    </tr>
+    <tr>
+      <td><strong>exp</strong></td>
+      <td>リクエストの有効期限 (expires_at) を示す Unix Timestamp です。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>注) <strong>contract_jwk</strong> はテナント契約ごとに個別に生成される鍵であり、<strong>https://optim-store.optim.co.jp/jwks.json</strong> に公開されている OPTiM Store の公開鍵は異なります。<strong>contract_jwk</strong> の <strong>kid</strong> は JWK Thumbprint 値となっています。</p>
+
+<h3 id="section-2">署名付きリクエスト</h3>
+
+<p>実際の POST Body は、上記の JSON を前述の OPTiM Store の Public Key のペアとなる Private Key で署名されたものを <strong>contract_statement</strong> という key に wrap した JSON データになります。</p>
+
+<p>署名に使用された鍵の ID (kid) は、JWS Header の kid に指定されています。</p>
+
+<p><strong>JWS Header 例</strong></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"typ"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JWT"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RS256"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"m5e8iciYCah6CCKyoK0klpYfr36guEdI8qxA10tAMho"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><strong>JWS Payload 例</strong></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"company"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f46f9970c914af9a22491402aa9eedc4a9645f2d2a303a39867c304ba461c47f"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"株式会社 XXX"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"website"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://xxx.example.com"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"contact"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sysadmin@xxx.example.com"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"licence"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"pool"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"contract_jwk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0-B5HVIdHUu8cPMKSn3jwlA0ctof_ajNUoblnEjYWrI"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAB"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6JNHFtl3atob3u45Q23faw2mEAP4lOZO5PN5h-8Q_NfqRi2ADzHAdAM9BSEzSwqplAWKkr6Y9PLrWKvsgF6q6N-f3NHczaa2vfqt5CW4GiWBvPw2hZ9y2B2EzB76fIngTn43kE71p5u6jIWdflkmTEmKMVEmdC7KVRxoMQQkXiG-QU7Rw_Frr_OtGOnXXhxTrz1tyhm9FjmU1ImHZm2Rib5NEX4ghAAIJZswN8zN5tEyJiGg1aJ4BfYrS9AXEXQHaYJX9Kzbv-UqYGIiFHcP1MmK4ZqQ5Kp8x_k0IDA5DUc3ecDw0Axm_Arl1BP94YVPQob2D1Xgr6qYt-2Xp0uxyw"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sig"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><strong>署名付き JSON 例</strong></p>
+
+<pre><code class="language-jwt">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Im01ZThpY2lZQ2FoNkNDS3lvSzBrbHBZZnIzNmd1RWRJOHF4QTEwdEFNaG8ifQ.eyJpc3MiOiJodHRwczovL3N0b3JlLm9wdGltLmNvLmpwIiwiYXVkIjoiaHR0cHM6Ly95b3VyLXNlcnZpY2UuZXhhbXBsZS5jb20vY29udHJhY3QvYXBpIiwiY29tcGFueSI6eyJpZCI6ImY0NmY5OTcwYzkxNGFmOWEyMjQ5MTQwMmFhOWVlZGM0YTk2NDVmMmQyYTMwM2EzOTg2N2MzMDRiYTQ2MWM0N2YiLCJuYW1lIjoiIFhYWCIsIndlYnNpdGUiOiJodHRwczovL3h4eC5leGFtcGxlLmNvbSIsImNvbnRhY3QiOiJzeXNhZG1pbkB4eHguZXhhbXBsZS5jb20ifSwibGljZW5jZSI6eyJwb29sIjoxMH0sImNvbnRyYWN0X2p3ayI6eyJraWQiOiIwLUI1SFZJZEhVdThjUE1LU24zandsQTBjdG9mX2FqTlVvYmxuRWpZV3JJIiwia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJuIjoiNkpOSEZ0bDNhdG9iM3U0NVEyM2ZhdzJtRUFQNGxPWk81UE41aC04UV9OZnFSaTJBRHpIQWRBTTlCU0V6U3dxcGxBV0trcjZZOVBMcldLdnNnRjZxNk4tZjNOSGN6YWEydmZxdDVDVzRHaVdCdlB3MmhaOXkyQjJFekI3NmZJbmdUbjQza0U3MXA1dTZqSVdkZmxrbVRFbUtNVkVtZEM3S1ZSeG9NUVFrWGlHLVFVN1J3X0Zycl9PdEdPblhYaHhUcnoxdHlobTlGam1VMUltSFptMlJpYjVORVg0Z2hBQUlKWnN3Tjh6TjV0RXlKaUdnMWFKNEJmWXJTOUFYRVhRSGFZSlg5S3pidi1VcVlHSWlGSGNQMU1tSzRacVE1S3A4eF9rMElEQTVEVWMzZWNEdzBBeG1fQXJsMUJQOTRZVlBRb2IyRDFYZ3I2cVl0LTJYcDB1eHl3IiwidXNlIjoic2lnIn0sImlhdCI6MTQ2NDA1MzcwNiwiZXhwIjoxNDY0MDU0MzA2fQ.O5FiomvNB6SiSGSlW1TAG4Q_Kesg7s7FfmraAb6G4CIgIq4UHCT8R7CT-ayS8GVT_GB4b40Ruc88Te-baZ2qC0vh3ceIzlNMep8mp4vLhzsxj7MgqGNyKiTjzvaTwLtRLD7Uc_-2-OVPgCha1545BlFxLbcPKRjxaNc5QmmBA6yi0kmCsidk1lfWEKx0vGZZih77g4Wn_k9LMQ4aB4OOkLvpaO0Afi0D-nv91xy2QI-pMDTphNpSqZkZBsNvvtyuEHHbo1qhrUJ81NDdALPUoMcws8TKq7pB5j_NUEY7sfXqgR0FQ5WvBult43Xx7RHvlNqOhpxw9bUQpWBcPstcHQ
+</code></pre>
+
+<p><strong>Request Body 例</strong></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"contract_statement"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Im01ZThpY2lZQ2FoNkNDS3lvSzBrbHBZZnIzNmd1RWRJOHF4QTEwdEFNaG8ifQ.eyJpc3MiOiJodHRwczovL3N0b3JlLm9wdGltLmNvLmpwIiwiYXVkIjoiaHR0cHM6Ly95b3VyLXNlcnZpY2UuZXhhbXBsZS5jb20vY29udHJhY3QvYXBpIiwiY29tcGFueSI6eyJpZCI6ImY0NmY5OTcwYzkxNGFmOWEyMjQ5MTQwMmFhOWVlZGM0YTk2NDVmMmQyYTMwM2EzOTg2N2MzMDRiYTQ2MWM0N2YiLCJuYW1lIjoiIFhYWCIsIndlYnNpdGUiOiJodHRwczovL3h4eC5leGFtcGxlLmNvbSIsImNvbnRhY3QiOiJzeXNhZG1pbkB4eHguZXhhbXBsZS5jb20ifSwibGljZW5jZSI6eyJwb29sIjoxMH0sImNvbnRyYWN0X2p3ayI6eyJraWQiOiIwLUI1SFZJZEhVdThjUE1LU24zandsQTBjdG9mX2FqTlVvYmxuRWpZV3JJIiwia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJuIjoiNkpOSEZ0bDNhdG9iM3U0NVEyM2ZhdzJtRUFQNGxPWk81UE41aC04UV9OZnFSaTJBRHpIQWRBTTlCU0V6U3dxcGxBV0trcjZZOVBMcldLdnNnRjZxNk4tZjNOSGN6YWEydmZxdDVDVzRHaVdCdlB3MmhaOXkyQjJFekI3NmZJbmdUbjQza0U3MXA1dTZqSVdkZmxrbVRFbUtNVkVtZEM3S1ZSeG9NUVFrWGlHLVFVN1J3X0Zycl9PdEdPblhYaHhUcnoxdHlobTlGam1VMUltSFptMlJpYjVORVg0Z2hBQUlKWnN3Tjh6TjV0RXlKaUdnMWFKNEJmWXJTOUFYRVhRSGFZSlg5S3pidi1VcVlHSWlGSGNQMU1tSzRacVE1S3A4eF9rMElEQTVEVWMzZWNEdzBBeG1fQXJsMUJQOTRZVlBRb2IyRDFYZ3I2cVl0LTJYcDB1eHl3IiwidXNlIjoic2lnIn0sImlhdCI6MTQ2NDA1MzcwNiwiZXhwIjoxNDY0MDU0MzA2fQ.O5FiomvNB6SiSGSlW1TAG4Q_Kesg7s7FfmraAb6G4CIgIq4UHCT8R7CT-ayS8GVT_GB4b40Ruc88Te-baZ2qC0vh3ceIzlNMep8mp4vLhzsxj7MgqGNyKiTjzvaTwLtRLD7Uc_-2-OVPgCha1545BlFxLbcPKRjxaNc5QmmBA6yi0kmCsidk1lfWEKx0vGZZih77g4Wn_k9LMQ4aB4OOkLvpaO0Afi0D-nv91xy2QI-pMDTphNpSqZkZBsNvvtyuEHHbo1qhrUJ81NDdALPUoMcws8TKq7pB5j_NUEY7sfXqgR0FQ5WvBult43Xx7RHvlNqOhpxw9bUQpWBcPstcHQ"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>OPTiM Store では、ユーザー企業様が御社サービスを利用開始する際に、上記 JSON データを御社サービスの Tenant Contract API Endpoint に HTTP POST で送信します。</p>
+
+<h3 id="section-3">リクエスト署名の検証</h3>
+
+<p>以下では Ruby の json-jwt gem を利用して、上記署名付き JSON リクエストの署名検証を行っています。</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'json/jwt'</span>
+
+<span class="n">contract_statement</span> <span class="o">=</span> <span class="s2">"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Im01ZThpY2lZQ2FoNkNDS3lvSzBrbHBZZnIzNmd1RWRJOHF4QTEwdEFNaG8ifQ.eyJpc3MiOiJodHRwczovL3N0b3JlLm9wdGltLmNvLmpwIiwiYXVkIjoiaHR0cHM6Ly95b3VyLXNlcnZpY2UuZXhhbXBsZS5jb20vY29udHJhY3QvYXBpIiwiY29tcGFueSI6eyJpZCI6ImY0NmY5OTcwYzkxNGFmOWEyMjQ5MTQwMmFhOWVlZGM0YTk2NDVmMmQyYTMwM2EzOTg2N2MzMDRiYTQ2MWM0N2YiLCJuYW1lIjoiIFhYWCIsIndlYnNpdGUiOiJodHRwczovL3h4eC5leGFtcGxlLmNvbSIsImNvbnRhY3QiOiJzeXNhZG1pbkB4eHguZXhhbXBsZS5jb20ifSwibGljZW5jZSI6eyJwb29sIjoxMH0sImNvbnRyYWN0X2p3ayI6eyJraWQiOiIwLUI1SFZJZEhVdThjUE1LU24zandsQTBjdG9mX2FqTlVvYmxuRWpZV3JJIiwia3R5IjoiUlNBIiwiZSI6IkFRQUIiLCJuIjoiNkpOSEZ0bDNhdG9iM3U0NVEyM2ZhdzJtRUFQNGxPWk81UE41aC04UV9OZnFSaTJBRHpIQWRBTTlCU0V6U3dxcGxBV0trcjZZOVBMcldLdnNnRjZxNk4tZjNOSGN6YWEydmZxdDVDVzRHaVdCdlB3MmhaOXkyQjJFekI3NmZJbmdUbjQza0U3MXA1dTZqSVdkZmxrbVRFbUtNVkVtZEM3S1ZSeG9NUVFrWGlHLVFVN1J3X0Zycl9PdEdPblhYaHhUcnoxdHlobTlGam1VMUltSFptMlJpYjVORVg0Z2hBQUlKWnN3Tjh6TjV0RXlKaUdnMWFKNEJmWXJTOUFYRVhRSGFZSlg5S3pidi1VcVlHSWlGSGNQMU1tSzRacVE1S3A4eF9rMElEQTVEVWMzZWNEdzBBeG1fQXJsMUJQOTRZVlBRb2IyRDFYZ3I2cVl0LTJYcDB1eHl3IiwidXNlIjoic2lnIn0sImlhdCI6MTQ2NDA1MzcwNiwiZXhwIjoxNDY0MDU0MzA2fQ.O5FiomvNB6SiSGSlW1TAG4Q_Kesg7s7FfmraAb6G4CIgIq4UHCT8R7CT-ayS8GVT_GB4b40Ruc88Te-baZ2qC0vh3ceIzlNMep8mp4vLhzsxj7MgqGNyKiTjzvaTwLtRLD7Uc_-2-OVPgCha1545BlFxLbcPKRjxaNc5QmmBA6yi0kmCsidk1lfWEKx0vGZZih77g4Wn_k9LMQ4aB4OOkLvpaO0Afi0D-nv91xy2QI-pMDTphNpSqZkZBsNvvtyuEHHbo1qhrUJ81NDdALPUoMcws8TKq7pB5j_NUEY7sfXqgR0FQ5WvBult43Xx7RHvlNqOhpxw9bUQpWBcPstcHQ"</span>
+
+<span class="c1"># NOTE: "kid" を取得</span>
+<span class="n">unverified_jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span><span class="p">(</span><span class="n">contract_statement</span><span class="p">,</span> <span class="ss">:skip_verification</span><span class="p">)</span>
+<span class="n">kid</span> <span class="o">=</span> <span class="n">unverified_jwt</span><span class="p">.</span><span class="nf">header</span><span class="p">[</span><span class="ss">:kid</span><span class="p">]</span>
+
+<span class="c1"># NOTE: "kid" に紐づく OPTiM Store Public Key を取得 (cache から取得可能な場合は skip 可能)</span>
+<span class="n">jwk</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span>
+  <span class="no">HTTPClient</span><span class="p">.</span><span class="nf">get_content</span><span class="p">(</span><span class="s1">'https://optim-store.optim.co.jp/jwks.json'</span><span class="p">)</span>
+<span class="p">)[</span><span class="s1">'keys'</span><span class="p">].</span><span class="nf">detect</span> <span class="k">do</span> <span class="o">|</span><span class="n">jwk</span><span class="o">|</span>
+  <span class="n">jwk</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">]</span> <span class="o">==</span> <span class="n">kid</span>
+<span class="k">end</span>
+<span class="n">public_key</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWK</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">jwk</span><span class="p">)</span>
+
+<span class="c1"># NOTE: 署名検証</span>
+<span class="n">verified_jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span><span class="p">(</span><span class="n">contract_statement</span><span class="p">,</span> <span class="n">public_key</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>その他の JWT/JWS ライブラリを利用する場合は、各ライブラリのドキュメントを参照してください。</p>
+
+<h2 id="optim-store-">御社サービス -&gt; OPTiM Store へのテナント契約成立レスポンス</h2>
+
+<p>上記リクエストを受け取り、署名およびリクエスト内容を検証した後、契約成立のレスポンスを返してください。</p>
+
+<p>以下にレスポンス例を示します。</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"contract_jwk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"u67PW3Rc0To3t_4fPz3Cwb0fuxICXXhI8SwBnak4C6Q"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAB"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yUB7KMp_ZsEbK734sMPjRSPfM7pV0Jf5KyjkkXk5Mw6Jja8z-ZTigqaoJVcV4tFX2CyTqDmVNgzb9oQJL62otjDWRwdFL99Rdor_YsxZt2eOSnBBY8PdhjYHTJtczIXsCHtYtx0clYcjMjvwNG_FIL4UJILmiHPxMMmWxPjEtTIo0pp8KdrrGZExJp4UD7JC7nPiNdvs31GHV0IoXpxqQAatfFBwQHFG3Fxsz7JS9p3mf_VBZ2CyPsdS58NqMPQVBbyxsdbK_OiPOk-4dmlJtxZFTMjXoBg4-hL9B1rRrUrN5ttm7QjJr3wjnKUy_OdKsqjxhPaj7XV04TuxBhxzOw"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="json--1">レスポンス JSON の各要素について</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>iss</strong></td>
+      <td>レスポンス発行者 (issuer) の識別子です。御社サービスの <strong>Tenant Contract API Endpoint URL</strong> となります。</td>
+    </tr>
+    <tr>
+      <td><strong>aud</strong></td>
+      <td>レスポンス受信者 (audience) の識別子です。OPTiM Store の URL となります。</td>
+    </tr>
+    <tr>
+      <td><strong>licence</strong></td>
+      <td>購入ライセンス数等の情報です。リクエストに含まれていた値をそのまま返却してください。</td>
+    </tr>
+    <tr>
+      <td><strong>contract_jwk</strong></td>
+      <td>各テナント契約ごとに御社サービス側で生成いただく RSA 鍵ペアの公開鍵です。契約開始直後 Federation　の自動設定を行う際に必要になります。</td>
+    </tr>
+    <tr>
+      <td><strong>iat</strong></td>
+      <td>レスポンス生成日時 (issued_at) を示す Unix Timestamp です。</td>
+    </tr>
+    <tr>
+      <td><strong>exp</strong></td>
+      <td>レスポンスの有効期限 (expires_at) を示す Unix Timestamp です。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>注) <strong>contract_jwk</strong> の <strong>kid</strong> は、JWK Thumbprint 仕様にしたがって生成してください。</p>
+
+<p>https://tools.ietf.org/html/rfc7638</p>
+
+<h3 id="section-4">レスポンスへの署名について</h3>
+
+<p>現状では御社サービス側の Contract Start API Endpoint を HTTPS 必須とすることで、契約成立レスポンスへの署名は不要としています。</p>
+
+<h2 id="section-5">テナント契約成立後の処理</h2>
+
+<p>テナント契約が成立すると、OPTiM / 御社サービス双方で当該契約に紐づく RSA 鍵ペアが生成され、相互に公開鍵を交換完了した状態になります。</p>
+
+<p>テナント契約成立後は、自信の持つテナント契約毎の秘密鍵を使って署名したリクエストを送信しあい、相手の公開鍵でその署名を検証することができるようになります。</p>
+
+<p>Provisioning / Federation の各システム連携に用いる OAuth / OpenID Connect Client の自動登録には、上記鍵ペアを利用します。</p>
+
+<p>プロビジョニング初期設定処理については <a href="/optim_store_api_docs/setup/scim">SCIM Client Setup</a> をご覧ください。</p>
+
+<p>ID 連携初期設定処理については <a href="/optim_store_api_docs/setup/connect">OpenID Connect Client Setup</a> をご覧ください。</p>
+
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="https://github.com/optim-corp" title="GitHub">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+      
+      
+      
+      
+      
+        </ul>
+        <p class="copyright text-muted">
+      OPTiM Inc.
+      &nbsp;&bull;&nbsp;
+      2016
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="/optim_store_api_docs/"></a>
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="http://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+        if (typeof jQuery == 'undefined') {
+          document.write('<script src="/optim_store_api_docs/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+        }
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/main.js"></script>
+    
+  
+
+
+
+
+
+  
+  </body>
+</html>
