@@ -137,14 +137,25 @@
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
       <p>本仕様書では、OPTiM Store に登録される SaaS サービス事業者様向けの、OPTiM Store 連携の全体フロー概要を説明します。</p>
 
+<p>OPTiM では、 OPTiM Store 連携において、フェデレーション標準プロトコルである <a href="http://openid.net/connect/">OpenID Connect</a> と、アイデンティティ・プロビジョニング標準プロトコルである <a href="http://www.simplecloud.info/">SCIM 2.0</a> を採用し、標準化された規格による連携を実現しています。</p>
+
+<p><a href="http://www.openid.or.jp/">OpenID ファウンデーション・ジャパン</a> の <a href="http://www.openid.or.jp/working-group/eiwg/">Enterprise Identity WG</a> にて公開されております、下記のガイドラインも合わせてご参照ください。</p>
+
+<ul>
+  <li><a href="https://www.openid.or.jp/news/eiwg_utilization_guideline_2.0.pdf">OpenID ConnectとSCIMのエンタープライズ利用ガイドライン</a></li>
+  <li><a href="https://www.openid.or.jp/news/eiwg_implementation_guideline_1.0.pdf">OpenID ConnectとSCIMのエンタープライズ実装ガイドライン</a></li>
+</ul>
+
+<hr />
+
 <p>OPTiM Store と御社サービスとの連携は、以下の5つの Step に大別されます。</p>
 
 <ul>
   <li><a href="#contract-setup">Step 1. ユーザー企業によるサービス購入直後の契約開始処理 (Tenant Contract Setup)</a></li>
   <li><a href="#scim-client-setup">Step 2. プロビジョニング初期設定 (SCIM Client Setup)</a></li>
-  <li><a href="#connect-client-setup">Step 3. ID 連携初期設定 (OpenID Connect Client Setup)</a></li>
+  <li><a href="#federation-setup">Step 3. ID 連携初期設定 (OpenID Connect Client / SAML 2.0 Service Provider Setup)</a></li>
   <li><a href="#scim-provisioning">Step 4. ライセンス・ユーザー属性情報連携 (SCIM Provisioning)</a></li>
-  <li><a href="#connect-federation">Step 5. ID 連携 (OpenID Connect / SAML 2.0 Federation)</a></li>
+  <li><a href="#federation">Step 5. ID 連携 (OpenID Connect / SAML 2.0 Federation)</a></li>
 </ul>
 
 <p>Step 1-3 はユーザー企業様が御社サービスを利用開始される初回のみ実行される処理で、この処理を OPTiM Store API を使って自動化することで、ユーザー企業様が待ち時間なくスムーズに御社サービスを利用開始できるようになります。</p>
@@ -181,11 +192,13 @@
 
 <p>なお契約開始処理を自動化されない場合は、こちらの処理についても書面 or メールベースで行うことになります。</p>
 
-<h2 id="connect-client-setup">ID 連携初期設定 (OpenID Connect Client Setup)</h2>
+<h2 id="federation-setup">ID 連携初期設定 (OpenID Connect Client / SAML 2.0 Service Provider Setup)</h2>
+
+<h3 id="connect-client-setup">OpenID Connect Client Setup</h3>
 
 <p>エンドユーザー様が OPTiM Store アカウントで御社サービスにログインするためには、御社サービス側で OPTiM Store との ID 連携処理を行っていただく必要があります。</p>
 
-<p>ID 連携のための仕組みとして、OPTiM Store では OpenID Connect と SAML という2つの仕組みを提供します。(SAML については、後日仕様公開予定です)</p>
+<p>ID 連携のための仕組みとして、OPTiM Store では OpenID Connect と SAML 2.0 という2つの仕組みを提供します。</p>
 
 <p>OpenID Connect プロトコルに従って ID 連携を行うには、OpenID Connect Client 登録が必要になります。OPTiM Store では OpenID Connect Client 登録用の API を提供しています。</p>
 
@@ -194,6 +207,12 @@
 <p>この ID 連携初期設定処理については <a href="/optim_store_api_docs/setup/connect">OpenID Connect Client Setup</a> をご覧ください。</p>
 
 <p>なお契約開始処理を自動化されない場合は、こちらの処理についても書面 or メールベースで行うことになります。</p>
+
+<h2 id="saml-sp-setup">SAML 2.0 Service Provider Setup</h2>
+
+<p>OpenID Connect の代わりに SAML を利用する場合は、<a href="/optim_store_api_docs/setup/saml">SAML Service Provider Setup</a> をご覧ください。</p>
+
+<p>※ 既にマルチテナントな SAML SP を実装しているサービス事業者様を除き、基本的には OpenID Connect の利用を推奨します。</p>
 
 <h2 id="scim-provisioning">ライセンス・ユーザー属性情報連携 (SCIM Provisioning)</h2>
 
@@ -207,7 +226,9 @@
 
 <p>契約開始処理を自動化されない場合でも、<strong>こちらの処理の実装は必須です</strong>。</p>
 
-<h2 id="connect-federation">ID 連携 (OpenID Connect / SAML 2.0 Federation)</h2>
+<h2 id="federation">ID 連携 (OpenID Connect / SAML 2.0 Federation)</h2>
+
+<h3 id="openid-connect-federation">OpenID Connect Federation</h3>
 
 <p>プロビジョニングが完了すると、OPTiM Store アカウントで御社サービスにログインすることが可能な状態になります。</p>
 
@@ -218,6 +239,14 @@
 <p>ID 連携の実装方法については <a href="/optim_store_api_docs/federation/connect">OpenID Connect Federation</a> をご覧ください。(SAML 版は後日公開予定です)</p>
 
 <p>契約開始処理を自動化されない場合でも、<strong>こちらの処理の実装は必須です</strong>。</p>
+
+<h3 id="saml-20-federation">SAML 2.0 Federation</h3>
+
+<p><a href="#saml-sp-setup">Step 3. ID 連携初期設定 (SAML Service Provider Setup)</a> もしくは問い合わせベースでの SAML SP 登録後に OPTiM Store から払い出される IdP Metadata を元に、SAML 連携を行ってください。</p>
+
+<p>OpenID Connect 利用時と異なり、御社側のテナント毎に OPTiM 側の SAML IdP テナントが分割されるため、テナント毎に SAML IdP Metadata も異なることに注意してください。</p>
+
+<p>なお、SAML 連携機能は既にマルチテナントな SAML SP を実装しているサービス事業者様を想定しているため、本ドキュメントでは SAML プロトコルに関する説明は省略します。</p>
 
 <h2 id="section">お問い合わせ</h2>
 

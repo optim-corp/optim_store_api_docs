@@ -213,7 +213,7 @@
 
 <h3 id="section-1">署名付きリクエスト</h3>
 
-<p>実際の POST Body は、上記の JSON に OPTiM Store 側の当該テナント契約に紐付いた RSA 秘密鍵で署名したものを <strong>contract_statement</strong> という key に wrap した JSON データになります。</p>
+<p>実際の POST Body は、上記の JSON に OPTiM Store 側の当該テナント契約に紐付いた RSA 秘密鍵で署名したものを <strong>software_statement</strong> という key に wrap した JSON データになります。</p>
 
 <p>署名に使用された鍵の ID (kid) は、JWS Header の <strong>kid</strong> に指定されていますので、御社サービス側ではその <strong>kid</strong> をもとに対応するテナント契約を特定してください。</p>
 
@@ -280,7 +280,7 @@
 
 <p>その他の JWT/JWS ライブラリを利用する場合は、各ライブラリのドキュメントを参照してください。</p>
 
-<h3 id="scim-client-registration-response">SCIM Client Registration Response</h3>
+<h2 id="scim-client-registration-response">SCIM Client Registration Response</h2>
 
 <p>リクエスト検証成功後、御社サービス側で当該テナントに紐づく SCIM Client (OAuth Client) を登録し、以下のような JSON Response を返してください。</p>
 
