@@ -135,18 +135,56 @@
 <div class="container" role="main">
   <div class="row">
     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      <p>本仕様書では、OPTiM Store に登録される SaaS サービス事業者様向けの、OPTiM Store 連携の全体フロー概要を説明します。</p>
+      <h2 id="welcome-to-optim-store-api">Welcome to OPTiM Store API</h2>
 
-<p>OPTiM では、 OPTiM Store 連携において、フェデレーション標準プロトコルである <a href="http://openid.net/connect/">OpenID Connect</a> と、アイデンティティ・プロビジョニング標準プロトコルである <a href="http://www.simplecloud.info/">SCIM 2.0</a> を採用し、標準化された規格による連携を実現しています。</p>
+<p>近年、`“ID連携”、”OpenID Connect”と言ったキーワードは、検索量が年々増加を続けており、インターネットを利用するサービスにとって非常に重要な技術として認識されています。</p>
 
-<p><a href="http://www.openid.or.jp/">OpenID ファウンデーション・ジャパン</a> の <a href="http://www.openid.or.jp/working-group/eiwg/">Enterprise Identity WG</a> にて公開されております、下記のガイドラインも合わせてご参照ください。</p>
+<p>OPTiM では、 OPTiM Store 連携において、</p>
+
+<ul>
+  <li>国内外の有力な企業も支援し、将来性の高いフェデレーション標準プロトコルである <a href="http://openid.net/connect/">OpenID Connect</a></li>
+  <li>アイデンティティ・プロビジョニング標準プロトコルである <a href="http://www.simplecloud.info/">SCIM 2.0</a></li>
+  <li>現状で最も普及率が高いフェデレーションプロトコルの<a href="https://www.oasis-open.org/committees/security/">SAML 2.0</a></li>
+</ul>
+
+<p>といった、標準化された規格を採用した連携を実現しています。</p>
+
+<p>またOPTiMでは、今後認証の入り口として、生体認証などもストアに取り込む準備をしています。
+OPTiM Storeと連携していただくことで、様々な認証方式を御社のサービスでご利用できるようになります。</p>
+
+<h3 id="optim-storeid">OPTiM StoreとID連携するメリット</h3>
+
+<ul>
+  <li>OPTiM Storeからサービスを購入したユーザーが、購入したサービスをシームレスに利用できるようになります。</li>
+  <li>市場シェア1位のMDMとID連携しているため、多数のビジネスパーソンにサービスを簡単に利用させることができます。また、多数の新規ライセンス販売量がありますので、デバイス管理サービス+ビジネスサービスとして営業様が販売しやすくなるメリットがあります。</li>
+  <li>ベンダー様がID/パスワードを管理する必要がないため、リスクのある情報の管理が楽になります。また、ユーザー様がID/パスワードを漏らしてしまっても、即座に全利用サービスの一時停止をしたり、一つのパスワードを変更していただくことで、サービスの利用を再開をすることが可能になります。</li>
+</ul>
+
+<h4 id="section">フェデレーションとは</h4>
+
+<ul>
+  <li>ユーザー様が一度OPTiM Storeで認証することで、許可されているすべてのサービスが利用できるようになる技術です。</li>
+  <li>OPTiM Storeは市場シェア1位のMDM「Optimal Biz」とID連携しているため、多数のMDMの利用者が、現在のIDを用いてサービスを利用できるようになります。</li>
+</ul>
+
+<h4 id="section-1">プロビジョニングとは</h4>
+
+<ul>
+  <li>連携するサービスへ、ユーザーアカウントの情報変更を伝搬するための技術です。</li>
+  <li>OPTiM Storeを利用する企業の管理者は、ユーザー一覧から簡単にライセンスを割り当てることができるようになります。</li>
+</ul>
+
+<hr />
+
+<h2 id="optim-store-">OPTiM Store 連携のフロー</h2>
+<p>本仕様書では、OPTiM Store に登録される SaaS サービス事業者様向けの、OPTiM Store 連携の全体フロー概要を説明します。</p>
+
+<p>実際の実装にあたりましては、<a href="http://www.openid.or.jp/">OpenID ファウンデーション・ジャパン</a> の <a href="http://www.openid.or.jp/working-group/eiwg/">Enterprise Identity WG</a> にて公開されております、下記のガイドラインも合わせてご参照ください。</p>
 
 <ul>
   <li><a href="https://www.openid.or.jp/news/eiwg_utilization_guideline_2.0.pdf">OpenID ConnectとSCIMのエンタープライズ利用ガイドライン</a></li>
   <li><a href="https://www.openid.or.jp/news/eiwg_implementation_guideline_1.0.pdf">OpenID ConnectとSCIMのエンタープライズ実装ガイドライン</a></li>
 </ul>
-
-<hr />
 
 <p>OPTiM Store と御社サービスとの連携は、以下の5つの Step に大別されます。</p>
 
@@ -248,11 +286,14 @@
 
 <p>なお、SAML 連携機能は既にマルチテナントな SAML SP を実装しているサービス事業者様を想定しているため、本ドキュメントでは SAML プロトコルに関する説明は省略します。</p>
 
-<h2 id="section">お問い合わせ</h2>
+<h2 id="section-2">お問い合わせ</h2>
 
 <p>本 API の仕様や使い方に関するお問い合わせは <a href="https://www.optim.co.jp/store/developer/form/">こちら</a> のフォームよりお願いします。</p>
 
 <p>また、 OPTiM Store の詳細に関しましては <a href="https://www.optim.co.jp/store/">こちら</a> のサイトをご参照ください。</p>
+
+<hr />
+<p>最終更新日：2016/07/14</p>
 
       
     </div>
