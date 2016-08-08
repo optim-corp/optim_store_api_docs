@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>JWT, JWS, JWK 実装チュートリアル</title>
+
+  <meta name="author" content="OPTiM Inc." />
+
+  
+  <meta name="description" content="OPTiM Store API Docs">
+  
+
+  
+    
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/optim_store_api_docs/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+  <!-- Facebook OpenGraph tags -->
+  <meta property="og:title" content="JWT, JWS, JWK 実装チュートリアル" />
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="/optim_store_api_docs//tutorials/jose" />
+  
+
+  
+  <meta property="og:image" content="/optim_store_api_docs//img/avatar-icon.png" />
+  
+
+</head>
+
+
+  <body>
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/optim_store_api_docs/">OPTiM Store API Docs</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+<a href="/optim_store_api_docs/">Back to TOP</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+  
+  <div class="avatar-container">
+    <div class="avatar-img-border">
+      <a href="/optim_store_api_docs/ ">
+        <img class="avatar-img" src="/optim_store_api_docs/img/avatar-icon.png" />
+    </a>
+    </div>
+  </div>
+  
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-heading">
+          <h1>JWT, JWS, JWK 実装チュートリアル</h1>
+      
+        
+            <hr class="small">
+            <span class="page-subheading">OPTiM Store API Docs</span>
+      
+      
+      
+      
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <p>OPTiM Store との連携には、<a href="/optim_store_api_docs/setup/contract">Tenant Contract Setup</a> をはじめとして様々な場面で以下の4つの署名付き JSON データを扱うための仕様群が登場します。</p>
+
+<ul>
+  <li>JSON Web Token (JWT)</li>
+  <li>JSON Web Signature (JWS)</li>
+  <li>JSON Web Key (JWK)</li>
+  <li>JSON Web Key Thumbprint (JWK Thumbprint)</li>
+</ul>
+
+<p>各仕様の RFC およびその翻訳版、各言語ごとのライブラリ等は <a href="/optim_store_api_docs/setup/contract">Tenant Contract Setup</a> 冒頭で紹介しているのでそちらをご覧ください。</p>
+
+<p>このチュートリアルでは、主要ライブラリを用いて署名付き JSON データの生成・署名検証のサンプルコードをご紹介します。</p>
+
+<h2 id="section">目次</h2>
+
+<ul>
+  <li><a href="#ruby">Ruby の場合</a>
+    <ul>
+      <li><a href="#ruby-jwk">JWK 生成</a></li>
+      <li><a href="#ruby-jwk-thumbprint">JWK Thumbprint 生成</a></li>
+      <li><a href="#ruby-jwt-sign">署名付き JWT 生成</a></li>
+      <li><a href="#ruby-jwt-verify">署名付き JWT の署名検証</a></li>
+    </ul>
+  </li>
+  <li><a href="#php">PHP の場合</a>
+    <ul>
+      <li><a href="#php-jwk">JWK 生成</a></li>
+      <li><a href="#php-jwk-thumbprint">JWK Thumbprint 生成</a></li>
+      <li><a href="#php-jwt-sign">署名付き JWT 生成</a></li>
+      <li><a href="#php-jwt-verify">署名付き JWT の署名検証</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ruby">Ruby の場合</h2>
+
+<p>Ruby では、上記4つの仕様をすべてサポートしているライブラリとして <a href="https://github.com/nov/json-jwt">json-jwt</a> を利用します。このライブラリの詳しい使い方は <a href="https://github.com/nov/json-jwt/wiki">JSON::JWT Wiki</a> にも記載されています。</p>
+
+<h3 id="ruby-jwk">JWK 生成</h3>
+
+<p>Contract API で <strong>contract_jwk</strong> を生成する際には、RSA 公開鍵を JWK 形式にエンコードします。</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">public_key</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">PKey</span><span class="o">::</span><span class="no">RSA</span><span class="p">.</span><span class="nf">new</span> <span class="o">&lt;&lt;-</span><span class="no">PEM</span><span class="sh">
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApG82+BzmQMLPTYD4G+ZD
+   :
+ (中略)
+   :
+LQIDAQAB
+-----END PUBLIC KEY-----
+</span><span class="no">PEM</span>
+
+<span class="c1"># NOTE:</span>
+<span class="c1">#  json-jwt gem では JSON::JWK インスタンスを生成すると</span>
+<span class="c1">#  自動的に JWK Thumbprint 値が kid にセットされます。</span>
+<span class="n">public_jwk</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWK</span><span class="p">.</span><span class="nf">new</span> <span class="n">public_key</span>
+
+<span class="nb">p</span> <span class="n">public_jwk</span>
+<span class="c1"># =&gt; {"kty": "RSA", "e": "AQAB", "n": "pG82-..(中略)..wgGLQ", "kid": "2wKYU..(中略)..yaFzY"}</span>
+</code></pre>
+</div>
+
+<h3 id="ruby-jwk-thumbprint">JWK Thumbprint 生成</h3>
+
+<p>json-jwt gem では JSON::JWK インスタンスを利用する限り自動的に JWK Thumbprint を <code class="highlighter-rouge">kid</code> として利用するようになっているため、明示的に JWK Thumbprint 値を計算する必要はありません。</p>
+
+<h3 id="ruby-jwt-sign">署名付き JWT 生成</h3>
+
+<p>OpenID Connect Client Registration API へのリクエスト時には、<strong>software_statement</strong> 生成のため署名付き JWT を生成します。</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">private_key</span> <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">PKey</span><span class="o">::</span><span class="no">RSA</span><span class="p">.</span><span class="nf">new</span> <span class="o">&lt;&lt;-</span><span class="no">PEM</span><span class="sh">
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpQIBAAKCAQEApG82+BzmQMLPTYD4G+ZD0nMOFfoxzJUmZaaZCId4eXem6mwX
+   :
+ (中略)
+   :
+oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
+-----END RSA PRIVATE KEY-----
+</span><span class="no">PEM</span>
+<span class="n">private_jwk</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWK</span><span class="p">.</span><span class="nf">new</span> <span class="n">private_key</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">foo: </span><span class="s1">'bar'</span><span class="p">,</span>
+  <span class="ss">hoge: </span><span class="s1">'fuga'</span>
+<span class="p">}</span>
+
+<span class="c1"># NOTE:</span>
+<span class="c1">#  json-jwt gem では JSON::JWK インスタンスで署名を行うと</span>
+<span class="c1">#  自動的に当該 JWK の JWK Thumbprint 値が JWT Header の kid にセットされます。</span>
+<span class="n">jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">new</span> <span class="n">payload</span>
+
+<span class="n">signed_jwt</span> <span class="o">=</span> <span class="n">jwt</span><span class="p">.</span><span class="nf">sign</span> <span class="n">private_jwk</span>
+<span class="nb">puts</span> <span class="n">singed_jwt</span><span class="p">.</span><span class="nf">to_s</span> <span class="c1"># =&gt; "eyJ0eXAi..(中略).._pBTA"</span>
+</code></pre>
+</div>
+
+<h3 id="ruby-jwt-verify">署名付き JWT の署名検証</h3>
+
+<p>Contract API Request や SCIM Client REgistration Request の検証時には、署名付き JWT の署名検証を行います。</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span> <span class="n">jwt_string</span><span class="p">,</span> <span class="ss">:skip_verification</span>
+<span class="n">jwt</span><span class="p">.</span><span class="nf">kid</span> <span class="c1"># =&gt; "2wKYU..(中略)..yaFzY"</span>
+
+<span class="c1"># TODO: ここで JWT Header の kid を元にテナント契約の特定を行い、contract_jwk をロードします。</span>
+<span class="n">contract_jwk</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">kty: </span><span class="s1">'RSA'</span><span class="p">,</span>
+  <span class="ss">e: </span><span class="s1">'AQAB'</span><span class="p">,</span>
+  <span class="ss">n: </span><span class="s1">'pG82-..(中略)..wgGLQ'</span><span class="p">,</span>
+  <span class="ss">kid: </span><span class="s1">'2wKYU..(中略)..yaFzY'</span>
+<span class="p">}</span>
+
+<span class="n">public_jwk</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWK</span><span class="p">.</span><span class="nf">new</span> <span class="n">contract_jwk</span>
+<span class="n">jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span> <span class="n">jwt_string</span><span class="p">,</span> <span class="n">public_key</span>
+</code></pre>
+</div>
+
+<h2 id="php">PHP の場合</h2>
+
+<p>Ruby では、上記4つの仕様をすべてサポートしているライブラリとして <a href="https://github.com/nov/jose-php">jose-php</a> を利用します。このライブラリの詳しい使い方は <a href="https://github.com/nov/jose-php/blob/master/README.md">jose-php README</a> にも記載されています。</p>
+
+<h3 id="php-jwk">JWK 生成</h3>
+
+<p>Contract API で <strong>contract_jwk</strong> を生成する際には、RSA 公開鍵を JWK 形式にエンコードします。</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$public_key</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">phpseclib\Crypt\RSA</span><span class="p">();</span>
+<span class="nv">$public_key</span><span class="o">-&gt;</span><span class="na">loadKey</span><span class="p">(</span><span class="s1">'-----BEGIN RSA PUBLIC KEY-----\n...'</span><span class="p">);</span>
+<span class="nv">$jwk</span> <span class="o">=</span> <span class="nx">JOSE_JWK</span><span class="o">::</span><span class="na">encode</span><span class="p">(</span><span class="nv">$public_key</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<h3 id="php-jwk-thumbprint">JWK Thumbprint 生成</h3>
+
+<p>jose-php では、JOSE_JWK インスタンスを生成した時点で <code class="highlighter-rouge">kid</code> に JWK Thumbprint 値が自動的にセットされます。</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$public_jwk</span> <span class="o">=</span> <span class="nx">JOSE_JWK</span><span class="o">::</span><span class="na">encode</span><span class="p">(</span><span class="nv">$public_key</span><span class="p">);</span>
+<span class="k">echo</span> <span class="nv">$public_jwk</span><span class="o">-&gt;</span><span class="na">components</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">];</span>
+</code></pre>
+</div>
+
+<h3 id="php-jwt-sign">署名付き JWT 生成</h3>
+
+<p>OpenID Connect Client Registration API へのリクエスト時には、<strong>software_statement</strong> 生成のため署名付き JWT を生成します。</p>
+
+<p>署名生成時には、<strong>署名生成を行う前に</strong> 鍵の <code class="highlighter-rouge">kid</code> 値を JWT Header に指定する必要があります。(署名生成後に JWT Header に変更を加えると、署名検証時にエラーになります)</p>
+
+<p>なお jose-php は JWK 形式の RSA Private Key による署名生成をサポートしていないため、署名用の秘密鍵として JOSE_JWK インスタンス自体を指定することができません。</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$private_key</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">phpseclib\Crypt\RSA</span><span class="p">();</span>
+<span class="nv">$private_key</span><span class="o">-&gt;</span><span class="na">loadKey</span><span class="p">(</span><span class="s1">'-----BEGIN RSA PRIVATE KEY-----\n...'</span><span class="p">);</span>
+<span class="nv">$private_jwk</span> <span class="o">=</span> <span class="nx">JOSE_JWK</span><span class="o">::</span><span class="na">encode</span><span class="p">(</span><span class="nv">$private_key</span><span class="p">);</span>
+
+<span class="nv">$payload</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+  <span class="nx">foo</span><span class="o">:</span> <span class="s1">'bar'</span><span class="p">,</span>
+  <span class="nx">hoge</span><span class="o">:</span> <span class="s1">'fuga'</span>
+<span class="p">);</span>
+
+<span class="nv">$jwt</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JOSE_JWT</span><span class="p">(</span><span class="nv">$payload</span><span class="p">);</span>
+<span class="nv">$jwt</span><span class="o">-&gt;</span><span class="na">header</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$private_jwk</span><span class="o">-&gt;</span><span class="na">components</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">];</span> <span class="c1"># NOTE: JOSE_JWT::sign() を呼ぶ前に!
+</span><span class="nv">$jwt</span><span class="o">-&gt;</span><span class="na">sign</span><span class="p">(</span><span class="nv">$private_key</span><span class="p">,</span> <span class="s1">'RS256'</span><span class="p">);</span> <span class="c1"># NOTE: $private_jwk ではなく $private_key を指定
+</span><span class="k">echo</span> <span class="nv">$jwt</span><span class="o">-&gt;</span><span class="na">toString</span><span class="p">();</span> <span class="c1"># =&gt; "eyJ0eXAi..(中略).._pBTA"
+</span></code></pre>
+</div>
+
+<h3 id="php-jwt-verify">署名付き JWT の署名検証</h3>
+
+<p>Contract API Request や SCIM Client REgistration Request の検証時には、署名付き JWT の署名検証を行います。</p>
+
+<div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$public_key</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">phpseclib\Crypt\RSA</span><span class="p">();</span>
+<span class="nv">$public_key</span><span class="o">-&gt;</span><span class="na">loadKey</span><span class="p">(</span><span class="s1">'-----BEGIN RSA PUBLIC KEY-----\n...'</span><span class="p">);</span>
+
+<span class="nv">$jwt_string</span> <span class="o">=</span> <span class="s1">'eyJ0eXAi..(中略).._pBTA'</span><span class="p">;</span>
+<span class="nv">$jwt</span> <span class="o">=</span> <span class="nx">JOSE_JWT</span><span class="o">::</span><span class="na">decode</span><span class="p">(</span><span class="nv">$jwt_string</span><span class="p">);</span>
+<span class="k">echo</span> <span class="nv">$jwt</span><span class="o">-&gt;</span><span class="na">header</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">];</span> <span class="c1"># =&gt; "2wKYU..(中略)..yaFzY";
+</span>
+<span class="c1"># TODO: ここで JWT Header の kid を元にテナント契約の特定を行い、contract_jwk をロードします。
+</span><span class="nv">$jwk_components</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+  <span class="nx">kty</span><span class="o">:</span> <span class="s1">'RSA'</span><span class="p">,</span>
+  <span class="nx">e</span><span class="o">:</span> <span class="s1">'AQAB'</span><span class="p">,</span>
+  <span class="nx">n</span><span class="o">:</span> <span class="s1">'pG82-..(中略)..wgGLQ'</span><span class="p">,</span>
+  <span class="nx">kid</span><span class="o">:</span> <span class="s1">'2wKYU..(中略)..yaFzY'</span>
+<span class="p">);</span>
+
+<span class="nv">$public_jwk</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JOSE_JWK</span><span class="p">(</span><span class="nv">$jwk_components</span><span class="p">);</span>
+<span class="nv">$jwt</span><span class="o">-&gt;</span><span class="na">verify</span><span class="p">(</span><span class="nv">$public_jwk</span><span class="p">,</span> <span class="s1">'RS256'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="https://github.com/optim-corp" title="GitHub">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+      
+      
+      
+      
+      
+        </ul>
+        <p class="copyright text-muted">
+      OPTiM Inc.
+      &nbsp;&bull;&nbsp;
+      2016
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="/optim_store_api_docs/"></a>
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="http://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+        if (typeof jQuery == 'undefined') {
+          document.write('<script src="/optim_store_api_docs/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+        }
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+  <script src="/optim_store_api_docs/js/main.js"></script>
+    
+  
+
+
+
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72955036-8', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <!-- End Google Analytics -->
+
+
+
+  
+  </body>
+</html>

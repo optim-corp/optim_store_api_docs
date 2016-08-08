@@ -221,6 +221,10 @@
       <td>御社サービス側のセッションに紐付いた任意の文字列。<code class="highlighter-rouge">redirect_uri</code> への Callback 時にそのままの値が返されるので、CSRF 対策に利用してください。</td>
     </tr>
     <tr>
+      <td><strong>nonce</strong></td>
+      <td>御社サービス側のセッションに紐付いた任意の文字列。後述の ID Token にそのままの値が含まれて返されるので、Code 置換攻撃対策に利用してください。</td>
+    </tr>
+    <tr>
       <td><strong>prompt</strong></td>
       <td>OPTiM Store 側でユーザー様にパスワード入力を強制 (強制ログイン) する場合には <code class="highlighter-rouge">login</code> という値を指定してください。それ以外の場合にはこのパラメータは不要です。</td>
     </tr>
@@ -234,7 +238,8 @@
   <span class="ss">scope: </span><span class="s1">'openid'</span><span class="p">,</span>
   <span class="ss">response_type: </span><span class="s1">'code'</span><span class="p">,</span>
   <span class="ss">redirect_uri: </span><span class="s1">'https://your-service.example.com/optim-store/callback'</span><span class="p">,</span>
-  <span class="ss">state: </span><span class="s1">'&lt;session-binded-opaque-value&gt;'</span>
+  <span class="ss">state: </span><span class="s1">'&lt;session-binded-opaque-value&gt;'</span><span class="p">,</span>
+  <span class="ss">nonce: </span><span class="s1">'&lt;session-binded-opaque-value&gt;'</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">authorization_endpoint</span> <span class="o">=</span> <span class="s1">'https://federation.optim.co.jp/connect/authorization'</span>
 
@@ -242,7 +247,7 @@
 <span class="c1"># https://federation.optim.co.jp/connect/authorization?</span>
 <span class="c1">#   client_id=%3Cyour-client-id-for-the-tenant%3E&amp;</span>
 <span class="c1">#   redirect_uri=https%3A%2F%2Fyour-service.example.com%2Foptim-store%2Fcallback&amp;</span>
-<span class="c1">#   response_type=code&amp;scope=openid</span>
+<span class="c1">#   response_type=code&amp;scope=openid&amp;state=xxx&amp;nonce=yyy</span>
 
 <span class="n">redirect_to</span> <span class="n">authorization_endpoint_with_request_params</span>
 </code></pre>
@@ -391,6 +396,7 @@
 <span class="c1">#   "iss": "https://federation.optim.co.jp",</span>
 <span class="c1">#   "aud": "&lt;your-client-id-for-the-tenant&gt;",</span>
 <span class="c1">#   "sub": "&lt;optim-store-user-guid&gt;",</span>
+<span class="c1">#   "nonce": "&lt;session-binded-opaque-value&gt;",</span>
 <span class="c1">#   "auth_time": 1464320207,</span>
 <span class="c1">#   "iat": 1464320208,</span>
 <span class="c1">#   "exp": 1464320508</span>
@@ -421,6 +427,10 @@
       <td>認証されたユーザー様 (subject) の OPTiM Store 上の GUID です。</td>
     </tr>
     <tr>
+      <td><strong>nonce</strong></td>
+      <td>認可リクエスト時に御社サービスが指定した値がそのまま含まれます。</td>
+    </tr>
+    <tr>
       <td><strong>auth_time</strong></td>
       <td>OPTiM Store 上でのユーザー様の最終ログイン日時 (authenticated_at) を示す Unix Timestamp です。強制認証リクエストを送信した場合には、リクエストパラメータの改ざんによる強制認証回避を防ぐため、この値が直近の日時であることを確認してください。</td>
     </tr>
@@ -440,6 +450,7 @@
 <ul>
   <li><code class="highlighter-rouge">iss</code> が <code class="highlighter-rouge">https://federation.optim.co.jp</code> と一致すること。</li>
   <li><code class="highlighter-rouge">aud</code> が該当テナントに発行された Client ID と一致すること。</li>
+  <li><code class="highlighter-rouge">nonce</code> が認可リクエスト送信時に指定した値と一致すること。</li>
   <li><code class="highlighter-rouge">exp</code> が未来の日時であること。</li>
   <li><code class="highlighter-rouge">iat</code> が現在もしくは過去の日時であること。</li>
   <li>強制認証要求時には <code class="highlighter-rouge">auth_time</code> が直近の日時 (5秒以内等) であること。</li>

@@ -204,12 +204,16 @@ SaaS サービスの Backend API と連携する Native App を通じて利用�
       <td><strong>state</strong></td>
       <td>セッションに紐付いた値 (この例では <code class="highlighter-rouge">590d36e1688aa02f863c78cae78d5dc8</code> とします)</td>
     </tr>
+    <tr>
+      <td><strong>nonce</strong></td>
+      <td>セッションに紐付いた値 (この例では <code class="highlighter-rouge">72cf7cf3a0010c45912ce3562d25e2c3</code> とします)</td>
+    </tr>
   </tbody>
 </table>
 
 <p>実際にリダイレクト先になる URL は以下のようになります。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>https://federation.optim.co.jp/connect/authorization?client_id=7a05a846d3dc5a860013ea7fe201e025&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https%3A%2F%2Frp.example.com%2Fcallback&amp;state=590d36e1688aa02f863c78cae78d5dc8
+<div class="highlighter-rouge"><pre class="highlight"><code>https://federation.optim.co.jp/connect/authorization?client_id=7a05a846d3dc5a860013ea7fe201e025&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https%3A%2F%2Frp.example.com%2Fcallback&amp;state=590d36e1688aa02f863c78cae78d5dc8&amp;nonce=72cf7cf3a0010c45912ce3562d25e2c3
 </code></pre>
 </div>
 
@@ -219,6 +223,12 @@ SaaS サービスの Backend API と連携する Native App を通じて利用�
 
 <p>後述の Token Response 受信時に <strong>state</strong> のチェックを怠ったり当該セッションに紐付かない <strong>state</strong> を受け入れてしまうと、被害者が悪意ある攻撃者に攻撃者のアカウントで強制的にログインさせられる (いわゆる「ログイン CSRF」) 危険性があります。<br />
 ログイン CSRF 攻撃が成立してしまうと、被害者が攻撃者アカウントでログインした後に御社サービス上で生成した各種データ (メール送信履歴やクラウドに保存したドキュメント等) が、攻撃者の手に渡ってしまうことになります。</p>
+
+<h3 id="nonce-"><strong>nonce</strong> の生成方法</h3>
+
+<p><strong>nonce</strong> には推測困難な乱数値 (Secure Random) を使用し、その値を Native App と Backend API Server の間で確立されたセッションに紐付けて保存するようにしてください。</p>
+
+<p>OpenID Connect の仕様上、Web アプリの場合は <strong>nonce</strong> の利用はオプションですが、何らかの脆弱性等により Code が漏洩した場合に発生しうるリスクを軽減するためにも <strong>nonce</strong> の利用は有効です。</p>
 
 <h2 id="step2-authorization-response-">Step2. Authorization Response の受信</h2>
 
