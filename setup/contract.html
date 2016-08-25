@@ -219,6 +219,13 @@
   </li>
 </ul>
 
+<p>また上記ライブラリを使って OPTiM Store で必要な操作を行うチュートリアル集を以下にまとめております。
+一部のライブラリについては、こちらでサンプルコード等もご紹介しています。</p>
+
+<ul>
+  <li><a href="/optim_store_api_docs/tutorials/jose">JWT, JWS, JWK 実装チュートリアル</a></li>
+</ul>
+
 <h2 id="section-1">事前設定項目</h2>
 <p>以降、本ドキュメントでは、OPTiM Store の URL を以下の値と仮定して説明を進めます。</p>
 
@@ -316,7 +323,7 @@
   </tbody>
 </table>
 
-<p>注) <strong>contract_jwk</strong> はテナント契約ごとに個別に生成される鍵であり、<strong>https://optim-store.optim.co.jp/jwks.json</strong> に公開されている OPTiM Store の公開鍵は異なります。<strong>contract_jwk</strong> の <strong>kid</strong> は JWK Thumbprint 値となっています。</p>
+<p>注) <strong>contract_jwk</strong> はテナント契約ごとに個別に生成される鍵であり、<strong>https://optim-store.optim.co.jp/jwks.json</strong> に公開されている OPTiM Store の公開鍵は異なります。<strong>contract_jwk</strong> の <strong>kid</strong> は JWK Thumbprint 値となっています。この <strong>contract_jwk</strong> およびその <strong>kid</strong> 値は後述の契約内容変更通知リクエストの検証のために利用することになるため、御社サービス側で当該テナント契約と紐付けて保存しておいてください。</p>
 
 <h3 id="section-2">署名付きリクエスト</h3>
 
@@ -476,6 +483,12 @@
 <p>プロビジョニング初期設定処理については <a href="/optim_store_api_docs/setup/scim">SCIM Client Setup</a> をご覧ください。</p>
 
 <p>ID 連携初期設定処理については <a href="/optim_store_api_docs/setup/connect">OpenID Connect Client Setup</a> をご覧ください。</p>
+
+<h2 id="section-6">テナント契約内容の変更および解除</h2>
+
+<p>契約ライセンス数の増減等のテナント契約内容の変更は <a href="/optim_store_api_docs/contract/update">Tenant Contract Update</a> の仕様にしたがって OPTiM Store から御社サービスに通知されます。</p>
+
+<p>また契約解除通知は <a href="/optim_store_api_docs/contract/destroy">Tenant Contract Destroy</a> の仕様にしたがって OPTiM Store から御社サービスに通知されます。</p>
 
       
     </div>
