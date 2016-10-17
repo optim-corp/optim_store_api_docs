@@ -126,9 +126,9 @@
       <div id='site-content' class='body'>
         <div class="col-md-10">
           
-<h1 id="tenant-contract-update">Tenant Contract Update</h1>
+<h1 id="contract-setup">Contract Setup</h1>
 
-<p>OPTiM Store のユーザー企業様が、御社サービスの利用ライセンス数等を変更された場合に行われる、テナント契約変更処理系のAPIです。<br />
+<p>OPTiM Store のユーザー企業様が御社サービスを利用開始する際に行われる、テナント契約開始処理のAPIです。<br />
 御社サービス側に実装頂き、OPTiM Store よりAPIの呼び出しを行います。</p>
 
 <h2 id="request">Request</h2>
@@ -136,13 +136,13 @@
 <h3 id="method">Method</h3>
 
 <ul>
-  <li>PUT</li>
+  <li>POST</li>
 </ul>
 
 <h3 id="resource-url">Resource URL</h3>
 
 <ul>
-  <li>任意のURL(<a href="/optim_store_api_docs/contract/setup">Contract Setup API</a>と共通)
+  <li>任意のURL
     <ul>
       <li>該当URLを、OPTiM Store 登録時にご連絡ください。</li>
     </ul>
@@ -213,17 +213,17 @@
     <tr>
       <td><strong>company</strong></td>
       <td>object</td>
-      <td>実際に御社サービスを利用される OPTiM Store ユーザー企業様の情報です。<strong>id</strong> は普遍ですが、<strong>name</strong> は更新されている可能性があるので既存の値と比較して、変更があれば適宜変更を反映させてください。</td>
+      <td>実際に御社サービスを利用される OPTiM Store ユーザー企業様の情報です。特に必要が無い場合は無視していただいても結構です。</td>
     </tr>
     <tr>
       <td><strong>license</strong></td>
       <td>object</td>
-      <td>購入ライセンス数等の情報です。現時点ではライセンス数のみを含みます。ライセンス数に変更があれば適宜変更を反映させてください。</td>
+      <td>購入ライセンス数等の情報です。現時点ではライセンス数のみを含みます。</td>
     </tr>
     <tr>
       <td><strong>contract_jwk</strong></td>
-      <td>object</td>
-      <td><a href="/optim_store_api_docs/setup/contract">Tenant Contract Setup</a> リクエスト時に OPTiM Store から送信された当該テナント契約に紐づく <strong>contract_jwk</strong> の <strong>kid</strong> のみが含まれます。</td>
+      <td>string</td>
+      <td>各テナント契約ごとに OPTiM 側で生成される RSA 鍵ペアの公開鍵です。契約開始直後 Provisioning　の自動設定を行う際に必要になります。</td>
     </tr>
     <tr>
       <td><strong>iat</strong></td>
@@ -241,9 +241,9 @@
 <h3 id="contract-statement-signing-key">Contract Statement Signing Key</h3>
 
 <ul>
-  <li><a href="'/optim_store_api_docs/contract/setup'">Contract Setup API</a>で、OPTiM Storeから御社サービスへ渡した公開鍵に紐づく秘密鍵
+  <li>OPTiM Store の <a href="/optim_store_api_docs/contract/public_key">Contract Public Key Endpoint</a> で公開している公開鍵に紐付く秘密鍵
     <ul>
-      <li>御社サービス側では、該当の公開鍵を利用し、<code class="highlighter-rouge">contract_statement</code>のJWTの署名検証を行ってください。</li>
+      <li>御社サービス側では、該当のエンドポイントで取得した公開鍵を利用し、<code class="highlighter-rouge">contract_statement</code>のJWTの署名検証を行ってください。</li>
       <li>署名検証については、<a href="/optim_store_api_docs/tutorials/jose">JOSE実装チュートリアル</a> を参考にしてください。</li>
     </ul>
   </li>
@@ -259,13 +259,17 @@
     </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"株式会社 XXX"</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="nt">"license"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"pool"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="w">
+    </span><span class="nt">"pool"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="nt">"contract_jwk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0-B5HVIdHUu8cPMKSn3jwlA0ctof_ajNUoblnEjYWrI"</span><span class="w">
+    </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0-B5HVIdHUu8cPMKSn3jwlA0ctof_ajNUoblnEjYWrI"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAB"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6JNHFtl3atob3u45Q23faw2mEAP4lOZO5PN5h-8Q_NfqRi2ADzHAdAM9BSEzSwqplAWKkr6Y9PLrWKvsgF6q6N-f3NHczaa2vfqt5CW4GiWBvPw2hZ9y2B2EzB76fIngTn43kE71p5u6jIWdflkmTEmKMVEmdC7KVRxoMQQkXiG-QU7Rw_Frr_OtGOnXXhxTrz1tyhm9FjmU1ImHZm2Rib5NEX4ghAAIJZswN8zN5tEyJiGg1aJ4BfYrS9AXEXQHaYJX9Kzbv-UqYGIiFHcP1MmK4ZqQ5Kp8x_k0IDA5DUc3ecDw0Axm_Arl1BP94YVPQob2D1Xgr6qYt-2Xp0uxyw"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sig"</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1470112510</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1470112810</span><span class="w">
+  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 </div>
@@ -276,7 +280,7 @@
 
 <h3 id="response-code">Response Code</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>200 OK
+<div class="highlighter-rouge"><pre class="highlight"><code>201 Created
 </code></pre>
 </div>
 
@@ -302,6 +306,11 @@
       <td>レスポンス受信者 (audience) の識別子です。OPTiM Store の URL となります。</td>
     </tr>
     <tr>
+      <td><strong>contract_jwk</strong></td>
+      <td>string</td>
+      <td>各テナント契約ごとに御社サービス側で生成いただく RSA 鍵ペアの公開鍵です。契約開始直後 Federation　の自動設定を行う際に必要になります。</td>
+    </tr>
+    <tr>
       <td><strong>iat</strong></td>
       <td>integer</td>
       <td>レスポンス生成日時 (issued_at) を示す Unix Timestamp です。</td>
@@ -315,22 +324,29 @@
 </table>
 
 <h3 id="sample-body-1">Sample Body</h3>
-
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"contract_jwk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"u67PW3Rc0To3t_4fPz3Cwb0fuxICXXhI8SwBnak4C6Q"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAB"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yUB7KMp_ZsEbK734sMPjRSPfM7pV0Jf5KyjkkXk5Mw6Jja8z-ZTigqaoJVcV4tFX2CyTqDmVNgzb9oQJL62otjDWRwdFL99Rdor_YsxZt2eOSnBBY8PdhjYHTJtczIXsCHtYtx0clYcjMjvwNG_FIL4UJILmiHPxMMmWxPjEtTIo0pp8KdrrGZExJp4UD7JC7nPiNdvs31GHV0IoXpxqQAatfFBwQHFG3Fxsz7JS9p3mf_VBZ2CyPsdS58NqMPQVBbyxsdbK_OiPOk-4dmlJtxZFTMjXoBg4-hL9B1rRrUrN5ttm7QjJr3wjnKUy_OdKsqjxhPaj7XV04TuxBhxzOw"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
   </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
   </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 </div>
 
-<h2 id="section">注意事項</h2>
+<h2 id="section">契約成立後の処理</h2>
 
-<p>OPTiM Store では、契約ライセンス数以上のライセンス付与済アカウント数が発生しなように Validation を行っていますが、御社サービス側での非同期処理やライセンス剥奪通知処理の失敗等により、ライセンス付与済アカウント数が契約ライセンス数を上回る可能性はゼロではありません。<br />
-もしライセンス付与済アカウント数が契約ライセンス数を上回るような状況が発生する場合には、ライセンス数変更通知に対するレスポンスとして 400 エラーを返すようにしてください。</p>
+<p>本APIにより、OPTiM Store / 御社サービス双方で当該契約に紐づく RSA 鍵ペアが生成され、相互に公開鍵を交換完了した状態になります。<br />
+契約成立後は、自身の持つテナント契約毎の秘密鍵を使って署名したリクエストを送信し、相手の公開鍵でその署名を検証することができるようになります。</p>
 
-<p>400 エラーを検知した場合、OPTiM Store の運営担当より、御社サービス担当者様に契約内容の修正のご連絡をさせていただきます。</p>
+<p>Provisioning / Federation の各システム連携に用いる OAuth / OpenID Connect Client の自動登録には、上記鍵ペアを利用します。<br />
+そのため、本APIで交換したお互いの秘密鍵/公開鍵はデーターベースなどに契約と紐付けた形で保持してください。</p>
+
 
         </div>
       </div>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<head>
+  <title>OPTiM Store API Docs</title>
+  <meta charset='utf-8'/>
+  <meta name='description' content='Documentation website'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'/>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+  <link href='/optim_store_api_docs/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <link href='/optim_store_api_docs/css/pygment_highlights.css' rel='stylesheet' type='text/css'>
+  <link href='/optim_store_api_docs/css/assets.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id='sidebar'>
+        <div class="avatar">
+  <img class="avatar-img" src="/optim_store_api_docs/img/avatar-icon.png">
+</div>
+
+<a href="/optim_store_api_docs/">
+  <h1 class="text-center">OPTiM Store API Docs</h1>
+</a>
+
+<ul id='links'>
+  <li>
+    <h2>Tutorial</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/whats'>What's this?</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/get_started'>Get Started</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/tutorial'>Contract API Tutorial</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/connect_for_web'>OIDC Tutorial for Web Apps</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/connect_for_native'>OIDC Tutorial for Native Apps</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/jose'>JOSE Tutorial</a>
+      </li>
+    </ul>
+
+    <h2>Contract API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/contract'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/public_key'>Public Key</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/setup'>Contract Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/update'>Contract Update</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/destroy'>Contract Destroy</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/scim'>SCIM Client Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/connect'>OpenID Connect Client Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/saml'>SAML 2.0 Service Provider Setup</a>
+      </li>
+    </ul>
+
+    <h2>OpenID Connect API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/connect'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/connect/authorization'>Authorization Request</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/connect/token'>Token Request</a>
+      </li>
+    </ul>
+
+    <h2>SCIM 2.0 API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/scim'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/scim/token'>Token</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/scim/users'>Users</a>
+      </li>
+      <li>
+        <ul>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#get'>List</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#post'>Create</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#put'>Update</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#delete'>Delete</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2>
+      <a href='/optim_store_api_docs/history'>History</a>
+    </h2>
+  </li>
+</ul>
+
+      </nav>
+
+      <div id='site-content' class='body'>
+        <div class="col-md-10">
+          
+<h1 id="openid-connect-token-request">OpenID Connect Token Request</h1>
+
+<p>OpenID Connect における認証結果である ID Token を取得するためのAPIです。<br />
+Callback 時に受け取った Authorization Code を OPTiM Store の Token Endpoint に送信 (Token Request) することで、認証結果を示すトークン (ID Token) を受け取ることができます。</p>
+
+<h2 id="request">Request</h2>
+
+<h3 id="method">Method</h3>
+
+<ul>
+  <li>POST</li>
+</ul>
+
+<h3 id="resource-url">Resource URL</h3>
+
+<ul>
+  <li>URLは、OPTiM Store との契約時にご連絡いたします。</li>
+  <li>本章では、https://federation.optim.co.jp/connect/token として記載致します。</li>
+</ul>
+
+<h3 id="header-parameters">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Content-Type: application/x-www-form-urlencoded
+</code></pre>
+</div>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>client_id</strong></td>
+      <td>事前登録時に取得した Client ID</td>
+    </tr>
+    <tr>
+      <td><strong>client_secret</strong></td>
+      <td>事前登録時に取得した Client Secret</td>
+    </tr>
+    <tr>
+      <td><strong>grant_type</strong></td>
+      <td><code class="highlighter-rouge">authorization_code</code> 固定</td>
+    </tr>
+    <tr>
+      <td><strong>code</strong></td>
+      <td>取得した <code class="highlighter-rouge">code</code> 値</td>
+    </tr>
+    <tr>
+      <td><strong>redirect_uri</strong></td>
+      <td>認証リクエスト時に指定した <code class="highlighter-rouge">redirect_uri</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="sample-body">Sample Body</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>grant_type=authorization_code&amp;client_id=&lt;your-client-id-for-the-tenant&gt;&amp;client_secret=&lt;your-client-secret-for-the-tenant&gt;&amp;code=&lt;onetime-token&gt;&amp;redirect_uri=https%3A%2F%2Fyour-service.example.com%2Foptim-store%2Fcallback
+</code></pre>
+</div>
+
+<h3 id="concept-code">Concept Code</h3>
+
+<p>以下に Ruby での Token Request 送信のコンセプトコードを記載します。(実際の利用時には OpenID Connect ライブラリ等の利用を推奨します)</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">client_id: </span><span class="s1">'&lt;your-client-id-for-the-tenant&gt;'</span><span class="p">,</span>
+  <span class="ss">client_secret: </span><span class="s1">'&lt;your-client-secret-for-the-tenant&gt;'</span><span class="p">,</span>
+  <span class="ss">grant_type: </span><span class="s1">'authorization_code'</span><span class="p">,</span>
+  <span class="ss">code: </span><span class="s1">'&lt;onetime-token&gt;'</span><span class="p">,</span>
+  <span class="ss">redirect_uri: </span><span class="s1">'https://your-service.example.com/optim-store/callback'</span>
+<span class="p">}</span>
+<span class="n">token_endpoint</span> <span class="o">=</span> <span class="s1">'https://federation.optim.co.jp/connect/token'</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="no">HTTPClient</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="n">token_endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+<span class="n">response</span><span class="p">.</span><span class="nf">body</span>
+<span class="c1"># {</span>
+<span class="c1">#   "access_token": "fake",</span>
+<span class="c1">#   "token_type": "bearer",</span>
+<span class="c1">#   "expires_in": 300,</span>
+<span class="c1">#   "id_token": "&lt;id-token&gt;"</span>
+<span class="c1"># }</span>
+</code></pre>
+</div>
+
+<h2 id="response">Response</h2>
+
+<p>正しく Token Request が送信されてきた場合、下記に従ったレスポンスを返却します。</p>
+
+<h3 id="response-code">Response Code</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>200 OK
+</code></pre>
+</div>
+
+<h3 id="response-parameters">Response Parameters</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>access_token</strong></td>
+      <td>string</td>
+      <td>一部のライブラリでエラーになることを防ぐ目的で OAuth 2.0 に準拠するためだけに発行される Token です。OPTiM Store との連携ではこの Token は利用しません。</td>
+    </tr>
+    <tr>
+      <td><strong>token_type</strong></td>
+      <td>string</td>
+      <td><code class="highlighter-rouge">bearer</code> 固定</td>
+    </tr>
+    <tr>
+      <td><strong>expires_in</strong></td>
+      <td>integer</td>
+      <td><code class="highlighter-rouge">access_token</code> の有効期間 (秒数) です。<code class="highlighter-rouge">access_token</code> は利用しないので無視してください。</td>
+    </tr>
+    <tr>
+      <td><strong>id_token</strong></td>
+      <td>string</td>
+      <td>ID Token です。後述の手順でこちらの Token をパースして認証結果を検証することになります。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="error-response">Error Response</h3>
+
+<p>リクエスト失敗時にはエラー内容が JSON で返されます。
+40x 系のエラーの場合は、同じ Authorization Code を使って Token Request をリトライしても同じくエラーになりますので、認可リクエストからやり直すようにしてください。</p>
+
+<h2 id="id-token-verification">ID Token の検証</h2>
+
+<p>OpenID Connect の ID Token は、JSON Web Token (JWT) という仕様にしたがって OPTiM Store によって署名が付与された JSON データです。</p>
+
+<p>JWT の仕様はこのドキュメントの冒頭で紹介したサイトで翻訳版およびライブラリリストが公開されています。</p>
+
+<p>また以下のサイトでも、各言語ごとの JWT ライブラリが紹介されているので、参考にしてください。</p>
+
+<ul>
+  <li>https://jwt.io</li>
+</ul>
+
+<p>以下に Ruby による ID Token デコード用のコンセプトコードを記載します。</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'json-jwt'</span>
+
+<span class="n">id_token</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span> <span class="s1">'&lt;id-token&gt;'</span><span class="p">,</span> <span class="ss">:skip_verification</span>
+<span class="c1"># {</span>
+<span class="c1">#   "iss": "https://federation.optim.co.jp",</span>
+<span class="c1">#   "aud": "&lt;your-client-id-for-the-tenant&gt;",</span>
+<span class="c1">#   "sub": "&lt;optim-store-user-guid&gt;",</span>
+<span class="c1">#   "nonce": "&lt;session-binded-opaque-value&gt;",</span>
+<span class="c1">#   "auth_time": 1464320207,</span>
+<span class="c1">#   "iat": 1464320208,</span>
+<span class="c1">#   "exp": 1464320508</span>
+<span class="c1"># }</span>
+</code></pre>
+</div>
+
+<p>ID Token の中には以下のような属性値が入っています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>iss</strong></td>
+      <td>Token 発行者 (issuer) の識別子です。<code class="highlighter-rouge">https://federation.optim.co.jp</code> 固定です。</td>
+    </tr>
+    <tr>
+      <td><strong>aud</strong></td>
+      <td>Token 受信者 (audience) の Client ID です。</td>
+    </tr>
+    <tr>
+      <td><strong>sub</strong></td>
+      <td>認証されたユーザー様 (subject) の OPTiM Store 上の GUID です。</td>
+    </tr>
+    <tr>
+      <td><strong>nonce</strong></td>
+      <td>認可リクエスト時に御社サービスが指定した値がそのまま含まれます。</td>
+    </tr>
+    <tr>
+      <td><strong>auth_time</strong></td>
+      <td>OPTiM Store 上でのユーザー様の最終ログイン日時 (authenticated_at) を示す Unix Timestamp です。強制認証リクエストを送信した場合には、リクエストパラメータの改ざんによる強制認証回避を防ぐため、この値が直近の日時であることを確認してください。</td>
+    </tr>
+    <tr>
+      <td><strong>iat</strong></td>
+      <td>ID Token の生成日時 (issued_at) を示す Unix Timestamp です。</td>
+    </tr>
+    <tr>
+      <td><strong>exp</strong></td>
+      <td>ID Token の有効期限 (expires_at) を示す Unix Timestamp です。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ID Token に含まれる上記の属性値を以下の通り検証してください。</p>
+
+<ul>
+  <li><code class="highlighter-rouge">iss</code> が <code class="highlighter-rouge">https://federation.optim.co.jp</code> と一致すること。</li>
+  <li><code class="highlighter-rouge">aud</code> が該当テナントに発行された Client ID と一致すること。</li>
+  <li><code class="highlighter-rouge">nonce</code> が認可リクエスト送信時に指定した値と一致すること。</li>
+  <li><code class="highlighter-rouge">exp</code> が未来の日時であること。</li>
+  <li><code class="highlighter-rouge">iat</code> が現在もしくは過去の日時であること。</li>
+  <li>強制認証要求時には <code class="highlighter-rouge">auth_time</code> が直近の日時 (5秒以内等) であること。</li>
+</ul>
+
+<p>なお、OPTiM Store Token Endpoint へのリクエスト時に TLS サーバ認証を行うことで、そのレスポンスは OPTiM Store サーバーから返却されたことが保障されるため、ID Token 自体の署名検証は省略可能です。</p>
+
+<p>ID Token 検証が成功したら、該当テナント内に存在する <code class="highlighter-rouge">sub</code> に紐付いたユーザー様を認証済としてください。</p>
+
+<p><code class="highlighter-rouge">sub</code> 値に紐付いたユーザー様は、事前にプロビジョニング (SCIM) API 経由で登録されているはずです。</p>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--[if lt IE 9]><script src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script><![endif]-->
+  <script src='/optim_store_api_docs/assets.js' type='text/javascript'></script>
+  <script>require('boot');</script>
+</body>
+</html>

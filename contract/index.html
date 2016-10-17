@@ -125,54 +125,102 @@
 
       <div id='site-content' class='body'>
         <div class="col-md-10">
-          <h2 id="optim-store-api-docs">OPTiM Store API Docs</h2>
+          <h1 id="tenant-contract-api">Tenant Contract API</h1>
 
-<p>OPTiM Store では、OPTiM Store で販売してる Enterprise で利用される様々なサービスと、ID連携を行うための仕組みを用意しています。</p>
+<p>ユーザー企業様と御社サービス間での契約処理に関するAPIです。</p>
 
-<p>すぐ買えて、すぐ使えて、すぐ繋がる。これが、Enterprise 向けサービスの新基準です。</p>
+<h2 id="api">API</h2>
 
-<h3 id="optim-store-">OPTiM Store の提供する仕組み</h3>
+<p>OPTiM Store では、契約処理の自動化用に下記のAPIを用意しています。</p>
 
-<p>OPTiM Store では、ID連携の機能として下記の3つの機能を提供しています。</p>
+<ul>
+  <li><a href="/optim_store_api_docs/contract/setup">Contract Setup API</a></li>
+  <li><a href="/optim_store_api_docs/contract/update">Contract Update API</a></li>
+  <li><a href="/optim_store_api_docs/contract/destroy">Contract Destroy API</a></li>
+</ul>
 
-<ol>
-  <li>契約処理の自動化
+<h2 id="section">要素技術</h2>
+
+<p>本 API では、HTTP Request Body に署名付き JSON を付与した上で、御社サービス側の Tenant Contract API Endpoint に HTTP POST Request を送信します。</p>
+
+<p>署名付き JSON 生成のため、以下の仕様を利用しています。</p>
+
+<ul>
+  <li><a href="https://tools.ietf.org/html/rfc7519">JSON Web Token (JWT)</a>
     <ul>
-      <li>OPTiM Store で購入したアプリケーションを、すぐ使えるようにするための仕組みです。</li>
+      <li>JSON データを Token 化するための仕様です。</li>
+      <li>URL Safe な Encode 方式と、広く一般的に Token に必要となる属性の定義を行っています。</li>
     </ul>
   </li>
-  <li>ユーザー管理、ライセンス管理の自動化
+  <li><a href="https://tools.ietf.org/html/rfc7515">JSON Web Signature (JWS)</a>
     <ul>
-      <li>OPTiM Store で契約されたユーザー情報やライセンス状態を、御社サービスに自動的に通知するための仕組みです。</li>
-      <li>SCIM 2.0 と呼ばれる、プロビジョニングの標準プロトコルをサポートしています。</li>
+      <li>JWT 等の JSON データに署名を付与するための仕様です。</li>
     </ul>
   </li>
-  <li>シングル・サインオン
+  <li><a href="https://tools.ietf.org/html/rfc7517">JSON Web Key (JWK)</a>
     <ul>
-      <li>OPTiM Store で契約されたユーザー様が、御社サービスを OPTiM Store のIDで使えるようにするための仕組みです。</li>
-      <li>OpenID Connect や SAML 2.0 と呼ばれる、フェデレーションの標準プロトコルをサポートしています。</li>
+      <li>公開鍵や秘密鍵を JSON 形式で表現するための仕様です。</li>
     </ul>
   </li>
-</ol>
+  <li><a href="https://tools.ietf.org/html/rfc7638">JSON Web Key (JWK) Thumbprint</a>
+    <ul>
+      <li>個々の JWK 鍵の識別子を重複なく生成する際などに利用する仕様です。</li>
+    </ul>
+  </li>
+</ul>
 
-<h3 id="section">対応までのステップ</h3>
+<p>JWT と JWS に関しては、以下の翻訳版も参考にしてください。</p>
 
-<p>下記の5ステップに対応することで、エンドユーザー様により安心・安全な Enterprise 向けサービスを提供することが出来ます。</p>
+<ul>
+  <li><a href="http://openid-foundation-japan.github.io/draft-ietf-oauth-json-web-token-11.ja.html">JWT (翻訳版)</a></li>
+  <li><a href="http://openid-foundation-japan.github.io/draft-ietf-jose-json-web-signature-14.ja.html">JWS (翻訳版)</a></li>
+  <li><a href="http://openid-foundation-japan.github.io/rfc7517.ja.html">JWK (翻訳版)</a></li>
+  <li><a href="http://openid-foundation-japan.github.io/rfc7638.ja.html">JWK Thumbprint (翻訳版)</a></li>
+</ul>
 
-<ol>
-  <li>契約処理の自動化</li>
-  <li>プロビジョニングの設定自動化</li>
-  <li>フェデレーションの設定自動化</li>
-  <li>プロビジョニング</li>
-  <li>フェデレーション</li>
-</ol>
+<p>御社サービス側では署名検証のため JWT/JWS ライブラリを利用することを推奨します。各言語ごとの JWT/JWS ライブラリは、以下のサイトにまとめられているので参考にしてください。</p>
 
-<p>実装のチュートリアルは、<a href="/optim_store_api_docs/tutorials/get_started">Get Started</a>をご参照ください。</p>
+<ul>
+  <li><a href="https://jwt.io">JWT.io</a></li>
+</ul>
 
-<h3 id="section-1">お問い合わせ</h3>
+<p>以下に主要各言語で上記4つの RFC をサポートしているライブラリをリストアップします。</p>
 
-<p>本 API の仕様や使い方に関するお問い合わせは <a href="https://www.optim.co.jp/store/developer/form/">こちら</a> のフォームよりお願いします。<br />
-また、 OPTiM Store の詳細に関しましては <a href="https://www.optim.co.jp/store/">こちら</a> のサイトをご参照ください。</p>
+<ul>
+  <li>Java
+    <ul>
+      <li><a href="https://connect2id.com/products/nimbus-jose-jwt">nimbus-jose-jwt</a></li>
+    </ul>
+  </li>
+  <li>PHP
+    <ul>
+      <li><a href="https://github.com/nov/jose-php">jose-php</a></li>
+    </ul>
+  </li>
+  <li>Ruby
+    <ul>
+      <li><a href="https://github.com/nov/json-jwt">json-jwt</a></li>
+    </ul>
+  </li>
+  <li>Python
+    <ul>
+      <li><a href="https://letsencrypt.readthedocs.io/projects/acme/en/latest/api/jose.html">acme-python</a></li>
+    </ul>
+  </li>
+  <li>Node.js (JavaScript)
+    <ul>
+      <li><a href="https://github.com/kjur/jsrsasign">jsrsasign</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>また上記ライブラリを使って OPTiM Store で必要な操作を行うチュートリアル集を以下にまとめております。
+一部のライブラリについては、こちらでサンプルコード等もご紹介しています。</p>
+
+<ul>
+  <li><a href="/optim_store_api_docs/tutorials/jose">JWT, JWS, JWK 実装チュートリアル</a></li>
+</ul>
+
 
         </div>
       </div>

@@ -125,54 +125,46 @@
 
       <div id='site-content' class='body'>
         <div class="col-md-10">
-          <h2 id="optim-store-api-docs">OPTiM Store API Docs</h2>
+          <h2 id="optim-store-id">OPTiM Store ID連携とは？</h2>
 
-<p>OPTiM Store では、OPTiM Store で販売してる Enterprise で利用される様々なサービスと、ID連携を行うための仕組みを用意しています。</p>
+<p>近年、”ID連携”、”OpenID Connect”と言ったキーワードは、検索量が年々増加を続けており、インターネットを利用するサービスにとって非常に重要な技術として認識されています。<br />
+特に Enterpirse で利用されるクラウドサービスにおいては、利便性及びセキュリティの観点で、その重要性がますます高まっています。<br />
+しかしその重要性とは裏腹に、乱立する独自規格や仕様の難解さにより、普及が進んでいないのが現実です。</p>
 
-<p>すぐ買えて、すぐ使えて、すぐ繋がる。これが、Enterprise 向けサービスの新基準です。</p>
+<p>OPTiM では、 ビジネスアプリケーションの販売プラットフォームである OPTiM Store において、</p>
 
-<h3 id="optim-store-">OPTiM Store の提供する仕組み</h3>
+<ul>
+  <li>国内外の有力な企業も支援し、将来性の高いフェデレーション標準プロトコルである <a href="http://openid.net/connect/">OpenID Connect</a></li>
+  <li>アイデンティティ・プロビジョニング標準プロトコルである <a href="http://www.simplecloud.info/">SCIM 2.0</a></li>
+  <li>現状で最も普及率が高いフェデレーションプロトコルの<a href="https://www.oasis-open.org/committees/security/">SAML 2.0</a></li>
+</ul>
 
-<p>OPTiM Store では、ID連携の機能として下記の3つの機能を提供しています。</p>
+<p>といった標準化された規格を採用したID連携を実現しています。</p>
 
-<ol>
-  <li>契約処理の自動化
-    <ul>
-      <li>OPTiM Store で購入したアプリケーションを、すぐ使えるようにするための仕組みです。</li>
-    </ul>
-  </li>
-  <li>ユーザー管理、ライセンス管理の自動化
-    <ul>
-      <li>OPTiM Store で契約されたユーザー情報やライセンス状態を、御社サービスに自動的に通知するための仕組みです。</li>
-      <li>SCIM 2.0 と呼ばれる、プロビジョニングの標準プロトコルをサポートしています。</li>
-    </ul>
-  </li>
-  <li>シングル・サインオン
-    <ul>
-      <li>OPTiM Store で契約されたユーザー様が、御社サービスを OPTiM Store のIDで使えるようにするための仕組みです。</li>
-      <li>OpenID Connect や SAML 2.0 と呼ばれる、フェデレーションの標準プロトコルをサポートしています。</li>
-    </ul>
-  </li>
-</ol>
+<p>またOPTiMでは、今後認証の入り口として、生体認証などもストアに取り込む準備をしています。
+OPTiM Storeと連携していただくことで、様々な認証方式を御社のサービスでご利用できるようになります。</p>
 
-<h3 id="section">対応までのステップ</h3>
-
-<p>下記の5ステップに対応することで、エンドユーザー様により安心・安全な Enterprise 向けサービスを提供することが出来ます。</p>
+<h3 id="optim-storeid3">OPTiM StoreとID連携する3つのメリット</h3>
 
 <ol>
-  <li>契約処理の自動化</li>
-  <li>プロビジョニングの設定自動化</li>
-  <li>フェデレーションの設定自動化</li>
-  <li>プロビジョニング</li>
-  <li>フェデレーション</li>
+  <li>OPTiM Storeからサービスを購入したユーザーが、購入したサービスをシームレスに利用できるようになります。</li>
+  <li>市場シェア1位のMDMとID連携しているため、多数のビジネスパーソンにサービスを簡単に利用させることができます。また、多数の新規ライセンス販売量がありますので、デバイス管理サービス+ビジネスサービスとして営業様が販売しやすくなるメリットがあります。</li>
+  <li>ベンダー様がID/パスワードを管理する必要がないため、リスクのある情報の管理が楽になります。また、ユーザー様がID/パスワードを漏らしてしまっても、即座に全利用サービスの一時停止をしたり、一つのパスワードを変更していただくことで、サービスの利用を再開をすることが可能になります。</li>
 </ol>
 
-<p>実装のチュートリアルは、<a href="/optim_store_api_docs/tutorials/get_started">Get Started</a>をご参照ください。</p>
+<h3 id="section">フェデレーションとは</h3>
 
-<h3 id="section-1">お問い合わせ</h3>
+<ul>
+  <li>ユーザー様が一度OPTiM Storeで認証することで、許可されているすべてのサービスが利用できるようになる技術です。</li>
+  <li>OPTiM Storeは市場シェア1位のMDM「Optimal Biz」とID連携しているため、多数のMDMの利用者が、現在のIDを用いてサービスを利用できるようになります。</li>
+</ul>
 
-<p>本 API の仕様や使い方に関するお問い合わせは <a href="https://www.optim.co.jp/store/developer/form/">こちら</a> のフォームよりお願いします。<br />
-また、 OPTiM Store の詳細に関しましては <a href="https://www.optim.co.jp/store/">こちら</a> のサイトをご参照ください。</p>
+<h3 id="section-1">プロビジョニングとは</h3>
+
+<ul>
+  <li>連携するサービスへ、ユーザーアカウントの情報変更を伝搬するための技術です。</li>
+  <li>OPTiM Storeを利用する企業の管理者は、ユーザー一覧から簡単にライセンスを割り当てることができるようになります。</li>
+</ul>
 
         </div>
       </div>

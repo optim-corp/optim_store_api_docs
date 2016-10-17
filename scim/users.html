@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<head>
+  <title>OPTiM Store API Docs</title>
+  <meta charset='utf-8'/>
+  <meta name='description' content='Documentation website'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'/>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+  <link href='/optim_store_api_docs/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <link href='/optim_store_api_docs/css/pygment_highlights.css' rel='stylesheet' type='text/css'>
+  <link href='/optim_store_api_docs/css/assets.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id='sidebar'>
+        <div class="avatar">
+  <img class="avatar-img" src="/optim_store_api_docs/img/avatar-icon.png">
+</div>
+
+<a href="/optim_store_api_docs/">
+  <h1 class="text-center">OPTiM Store API Docs</h1>
+</a>
+
+<ul id='links'>
+  <li>
+    <h2>Tutorial</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/whats'>What's this?</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/get_started'>Get Started</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/tutorial'>Contract API Tutorial</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/connect_for_web'>OIDC Tutorial for Web Apps</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/connect_for_native'>OIDC Tutorial for Native Apps</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/jose'>JOSE Tutorial</a>
+      </li>
+    </ul>
+
+    <h2>Contract API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/contract'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/public_key'>Public Key</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/setup'>Contract Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/update'>Contract Update</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/destroy'>Contract Destroy</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/scim'>SCIM Client Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/connect'>OpenID Connect Client Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/saml'>SAML 2.0 Service Provider Setup</a>
+      </li>
+    </ul>
+
+    <h2>OpenID Connect API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/connect'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/connect/authorization'>Authorization Request</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/connect/token'>Token Request</a>
+      </li>
+    </ul>
+
+    <h2>SCIM 2.0 API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/scim'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/scim/token'>Token</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/scim/users'>Users</a>
+      </li>
+      <li>
+        <ul>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#get'>List</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#post'>Create</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#put'>Update</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#delete'>Delete</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2>
+      <a href='/optim_store_api_docs/history'>History</a>
+    </h2>
+  </li>
+</ul>
+
+      </nav>
+
+      <div id='site-content' class='body'>
+        <div class="col-md-10">
+          
+<h1 id="scim-api">SCIM API</h1>
+
+<p>OPTiM Store より御社サービスへプロビジョニングを行うためのAPI仕様です。<br />
+SCIM Server として御社サービス側に実装して頂く必要のある、SCIM APIについて記載します。</p>
+
+<p>OPTiM Store から、下記の仕様に示すリクエストを送信いたしますので、SCIMの仕様に従って処理・及び処理結果のレスポンスを返却するように実装してください。</p>
+
+<h3 id="section">エンドポイント</h3>
+<ul>
+  <li>SCIM APIのエンドポイントは下表のとおりです。</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>エンドポイント</th>
+      <th>内容</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>https://[hostname]/scim/v1/Users</td>
+      <td>利用者情報</td>
+      <td>POST(追加)・GET(検索)</td>
+    </tr>
+    <tr>
+      <td>https://[hostname]/scim/v1/Users/:id</td>
+      <td>利用者情報</td>
+      <td>PUT(更新)・DELETE(削除)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="api">API一覧</h3>
+
+<ul>
+  <li>実装頂くSCIM の Users API の一覧は下記になります。
+    <ul>
+      <li><a href="#get">利用者情報検索API</a></li>
+      <li><a href="#post">利用者情報追加API</a></li>
+      <li><a href="#put">利用者情報更新API</a></li>
+      <li><a href="#delete">利用者情報削除API</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="section-1">利用者スキーマ情報</h3>
+<ul>
+  <li>SCIMで利用する、利用者のスキーマ情報は下表のとおりです。</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>スキーマ</th>
+      <th>必須</th>
+      <th>更新</th>
+      <th>一意性</th>
+      <th>備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>SCIM標準</td>
+      <td>○</td>
+      <td>参照のみ</td>
+      <td>有</td>
+      <td>追加時に独自に生成してください。<br />システムで一意となる値にする必要があります。</td>
+    </tr>
+    <tr>
+      <td>externalId</td>
+      <td>SCIM標準</td>
+      <td>○</td>
+      <td>不可</td>
+      <td>有</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>name.familyName</td>
+      <td>SCIM標準</td>
+      <td>×</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>name.givenName</td>
+      <td>SCIM標準</td>
+      <td>×</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>displayName</td>
+      <td>SCIM標準</td>
+      <td>×</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>emails.value</td>
+      <td>SCIM標準</td>
+      <td>×</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>active</td>
+      <td>SCIM標準</td>
+      <td>×</td>
+      <td>可</td>
+      <td>無</td>
+      <td>有効な場合は、属性が存在し何らかの値が格納されます。<br />無効の場合は、属性が存在しません。</td>
+    </tr>
+    <tr>
+      <td>created</td>
+      <td>SCIM標準</td>
+      <td>×</td>
+      <td>不可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>lastModified</td>
+      <td>SCIM標準</td>
+      <td>×</td>
+      <td>不可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>department</td>
+      <td>SCIM拡張</td>
+      <td>×</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>externalUserName</td>
+      <td>EIWG拡張</td>
+      <td>◯</td>
+      <td>不可</td>
+      <td>有</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>idtokenClaims.subject</td>
+      <td>EIWG拡張</td>
+      <td>◯</td>
+      <td>不可</td>
+      <td>有</td>
+      <td>利用者の特定に利用します。</td>
+    </tr>
+    <tr>
+      <td>idtokenClaims.issuer</td>
+      <td>EIWG拡張</td>
+      <td>◯</td>
+      <td>不可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>bizBizIdentityCode</td>
+      <td>拡張</td>
+      <td>◯</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>bizCompanyCode</td>
+      <td>拡張</td>
+      <td>◯</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>bizSpCompanyCode</td>
+      <td>拡張</td>
+      <td>◯</td>
+      <td>可</td>
+      <td>無</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>返却情報のうち、OPTiM Storeが使用する属性は、idのみとなります。</li>
+  <li>詳細は、<a href="http://www.simplecloud.info/">SCIM 仕様</a>を参照してください。</li>
+</ul>
+
+<h1 id="get">利用者情報検索API(GETメソッド)</h1>
+
+<ul>
+  <li>利用者情報の検索処理を行ってください。</li>
+</ul>
+
+<h2 id="request">Request</h2>
+
+<h3 id="method">Method</h3>
+
+<ul>
+  <li>GET</li>
+</ul>
+
+<h3 id="resource-url">Resource URL</h3>
+
+<ul>
+  <li>任意のURL
+    <ul>
+      <li>該当URLを、OPTiM Store 登録時にご連絡ください。</li>
+    </ul>
+  </li>
+  <li>本章では、https://your-service.example.com/scim/v1/Users として記載致します。</li>
+</ul>
+
+<h3 id="header-parameters">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>GET /scim/v1/Users/?filter=bizUserId%20eq%20user001%20and%20bizIdentifier%20eq%20BIZ
+
+Accept: application/scim+json;charset=UTF-8
+Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
+</code></pre>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>OAuth 2.0 Bearer として token リクエストで取得したアクセストークンを設定します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<ul>
+  <li>クエリパラメーターで、検索フィルター・返却属性・ソートキー・ソート順・ページあたりの件数・ページ番号の指定を出来るようにする必要があります(OPTIONAL)。</li>
+  <li>上記のうち、対象者の検索のため、最低限下記の検索フィルターを実装する必要があります。
+    <ul>
+      <li>** 「idtokenClaims.subject eq [値] and bizBizIdentityCode eq [値]」 **</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="section-2">処理内容</h3>
+
+<ol>
+  <li>アクセストークンが正しい値であるか確認します。</li>
+  <li>アクセストークンから対象のテナントを特定します。</li>
+  <li>対象のテナント内から指定された検索フィルターに従い、情報を取得します。</li>
+  <li>情報をJSON形式に変換し、返却します。id属性は必ず返却してください。その他の属性は省略しても構いません。</li>
+</ol>
+
+<h2 id="response">Response</h2>
+
+<p>下記に従ったレスポンスを返却してください。</p>
+
+<h3 id="response-code">Response Code</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>200 OK
+</code></pre>
+</div>
+
+<h3 id="header-parameters-1">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Content-Type: application/scim+json;charset=UTF-8
+</code></pre>
+</div>
+
+<h3 id="response-parameters">Response Parameters</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>schemas</td>
+      <td>array</td>
+      <td>[“urn:ietf:params:scim:api:messages:2.0:ListResponse”] 固定です。</td>
+    </tr>
+    <tr>
+      <td>totalResults</td>
+      <td>integer</td>
+      <td>Resources の件数を返却してください。</td>
+    </tr>
+    <tr>
+      <td>Resources</td>
+      <td>array</td>
+      <td>条件を満たすユーザーのスキーマ情報を返却してください。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="sample-body">Sample Body</h3>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"urn:ietf:params:scim:api:messages:2.0:ListResponse"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"totalResults"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Resources"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
+            </span><span class="p">],</span><span class="w">
+            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b3603063-2801-4c8c-b602-a142efe7ad6a"</span><span class="p">,</span><span class="w">
+            </span><span class="err">※属性を記載する</span><span class="w">
+            </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-09-02T05:38:35.114Z"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"lastModified"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-10-15T09:12:40.519Z"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/scim/v1/Users/b3603063-2801-4c8c-b602-a142efe7ad6a"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h1 id="post">利用者情報追加API(POSTメソッド)</h1>
+
+<ul>
+  <li>指定された情報を元に、利用者情報の追加処理を行ってください。</li>
+</ul>
+
+<h2 id="request-1">Request</h2>
+
+<h3 id="method-1">Method</h3>
+
+<ul>
+  <li>POST</li>
+</ul>
+
+<h3 id="resource-url-1">Resource URL</h3>
+
+<ul>
+  <li>任意のURL
+    <ul>
+      <li>該当URLを、OPTiM Store 登録時にご連絡ください。</li>
+    </ul>
+  </li>
+  <li>本章では、https://your-service.example.com/scim/v1/Users として記載致します。</li>
+</ul>
+
+<h3 id="header-parameters-2">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>POST /scim/v1/Users
+
+Content-Type: application/scim+json;charset=UTF-8
+Accept: application/scim+json;charset=UTF-8
+Authorization: Bearer MDNhNTlhN2ItYmE1NC00OWQ3LWFkMzQtODliYjhhN2Q0Mjlh
+</code></pre>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>OAuth 2.0 Bearer として token リクエストで取得したアクセストークンを設定します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="query-parameters-1">Query Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="request-parameters-1">Request Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="sample-body-1">Sample Body</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="err">※属性を記載する</span><span class="w">
+</span><span class="err">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="section-3">処理内容</h3>
+<ol>
+  <li>アクセストークンが正しい値であるか確認します。</li>
+  <li>アクセストークンから対象のテナントを特定します。</li>
+  <li>システム内で一意に該当利用者を特定するidを生成します。idはUUID4などで生成してください。</li>
+  <li>指定された属性、値をシステムへ反映します。</li>
+  <li>反映した情報をJSON形式に変換し、返却します。id属性は必ず返却してください。その他の属性は省略しても構いません。</li>
+</ol>
+
+<h2 id="response-1">Response</h2>
+
+<ul>
+  <li>SCIM仕様上、一意に該当利用者を特定するためのidの生成が必要となります。</li>
+  <li>SCIM仕様上、レスポンスにUTCの作成日時(created)を生成する必要がありますが、本仕様上は使用していないため、省略しても構いません。</li>
+</ul>
+
+<h3 id="response-code-1">Response Code</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>201 Created
+</code></pre>
+</div>
+
+<h3 id="header-parameters-3">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Content-Type: application/scim+json;charset=UTF-8
+Location: https://your-service.example.com/scim/v1/Users/8f848134-3f6f-4432-9db7-5599a5263696
+</code></pre>
+</div>
+
+<h3 id="response-parameters-1">Response Parameters</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>schemas</td>
+      <td>array</td>
+      <td>[“urn:x-optim:scim:schemas:extention:cim:1.0:User”] 固定です。</td>
+    </tr>
+    <tr>
+      <td>meta</td>
+      <td>array</td>
+      <td>作成したユーザーのスキーマ情報を返却してください。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="sample-body-2">Sample Body</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="err">※属性を記載する</span><span class="w">
+    </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-10-15T17:50:51.316Z"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/scim/v1/Users/8f848134-3f6f-4432-9db7-5599a5263696"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h1 id="put">利用者情報更新API(PUTメソッド)</h1>
+<ul>
+  <li>利用者情報の更新処理を行なってください。</li>
+  <li>PUT リクエストでは、指定がない属性は削除するようにしてください。</li>
+  <li>システム上必要な項目が送信されない場合は、エラーとしてください。</li>
+  <li>利用者の削除を行わず、ライセンス状態のみ変更する場合があります。
+ライセンス状態の有無をシステム上管理していない場合は、該当属性から判断し、利用者の削除、追加などの処理に対応付けた実装を行う必要があります。</li>
+  <li>SCIMの仕様上、レスポンスにUTCの更新日時(lastModified)を含める必要がありますが、本仕様上は使用していないため、省略しても構いません。</li>
+  <li>詳細は、<a href="http://www.simplecloud.info/">SCIM 仕様</a>を参照してください。</li>
+</ul>
+
+<h2 id="request-2">Request</h2>
+
+<h3 id="method-2">Method</h3>
+
+<ul>
+  <li>PUT</li>
+</ul>
+
+<h3 id="resource-url-2">Resource URL</h3>
+
+<ul>
+  <li>任意のURL
+    <ul>
+      <li>該当URLを、OPTiM Store 登録時にご連絡ください。</li>
+    </ul>
+  </li>
+  <li>本章では、https://your-service.example.com/scim/v1/Users/:id として記載致します。</li>
+</ul>
+
+<h3 id="header-parameters-4">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>PUT /scim/v1/Users/8f848134-3f6f-4432-9db7-5599a5263696
+
+Content-Type: application/scim+json;charset=UTF-8
+Accept: application/scim+json;charset=UTF-8
+Authorization: Bearer MDNhNTlhN2ItYmE1NC00OWQ3LWFkMzQtODliYjhhN2Q0Mjlh
+</code></pre>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>OAuth 2.0 Bearer として token リクエストで取得したアクセストークンを設定します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="query-parameters-2">Query Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="request-parameters-2">Request Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="sample-body-3">Sample Body</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="err">※属性を記載する</span><span class="w">
+</span><span class="err">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="section-4">処理内容</h3>
+
+<ol>
+  <li>アクセストークンが正しい値であるか確認します。</li>
+  <li>アクセストークンから対象のテナントを特定します。</li>
+  <li>テナント内の情報からidを元に対象の利用者を取得します。</li>
+  <li>指定された属性、値をシステムへ反映します。この時、指定がない属性は削除してください。</li>
+  <li>反映した情報をJSON形式に変換し、返却します。id属性は必ず返却してください。その他の属性は省略しても構いません。</li>
+</ol>
+
+<h2 id="response-2">Response</h2>
+
+<h3 id="response-code-2">Response Code</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>200 OK
+</code></pre>
+</div>
+
+<h3 id="header-parameters-5">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Content-Type: application/scim+json;charset=UTF-8
+Location: https://your-service.example.com/scim/v1/Users/8f848134-3f6f-4432-9db7-5599a5263696
+</code></pre>
+</div>
+
+<h3 id="response-parameters-2">Response Parameters</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>schemas</td>
+      <td>array</td>
+      <td>[“urn:x-optim:scim:schemas:extention:cim:1.0:User”] 固定です。</td>
+    </tr>
+    <tr>
+      <td>meta</td>
+      <td>array</td>
+      <td>変更処理を行ったユーザーのスキーマ情報を返却してください。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="sample-body-4">Sample Body</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="err">※属性を記載する</span><span class="w">
+    </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-10-15T17:50:51.316Z"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lastModified "</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-10-16T18:10:52.132Z"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/scim/v1/Users/8f848134-3f6f-4432-9db7-5599a5263696"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h1 id="delete">利用者情報削除API(DELETEメソッド)</h1>
+<ul>
+  <li>利用者情報の削除処理を行ってください。</li>
+  <li>詳細は、<a href="http://www.simplecloud.info/">SCIM 仕様</a>を参照してください。</li>
+</ul>
+
+<h2 id="request-3">Request</h2>
+
+<h3 id="method-3">Method</h3>
+
+<ul>
+  <li>DELETE</li>
+</ul>
+
+<h3 id="resource-url-3">Resource URL</h3>
+
+<ul>
+  <li>任意のURL
+    <ul>
+      <li>該当URLを、OPTiM Store 登録時にご連絡ください。</li>
+    </ul>
+  </li>
+  <li>本章では、https://your-service.example.com/scim/v1/Users/:id として記載致します。</li>
+</ul>
+
+<h3 id="header-parameters-6">Header Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>DELETE /scim/v1/Users/8f848134-3f6f-4432-9db7-5599a5263696
+
+Accept: application/scim+json;charset=UTF-8
+Authorization: Bearer MDNhNTlhN2ItYmE1NC00OWQ3LWFkMzQtODliYjhhN2Q0Mjlh
+</code></pre>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Authorization</td>
+      <td>OAuth 2.0 Bearer として token リクエストで取得したアクセストークンを設定します。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="query-parameters-3">Query Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="request-parameters-3">Request Parameters</h3>
+
+<h3 id="sample-body-5">Sample Body</h3>
+
+<h3 id="section-5">処理内容</h3>
+<ol>
+  <li>アクセストークンが正しい値であるか確認します。</li>
+  <li>アクセストークンから対象のテナントを特定します。</li>
+  <li>テナント内の情報からidを元に対象の利用者を特定し、削除処理をします。</li>
+  <li>処理結果のレスポンスを返します。</li>
+</ol>
+
+<h2 id="response-3">Response</h2>
+
+<h3 id="response-code-3">Response Code</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>204 No Content
+</code></pre>
+</div>
+
+<h3 id="response-parameters-3">Response Parameters</h3>
+
+<ul>
+  <li>レスポンスは空となります。</li>
+</ul>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--[if lt IE 9]><script src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script><![endif]-->
+  <script src='/optim_store_api_docs/assets.js' type='text/javascript'></script>
+  <script>require('boot');</script>
+</body>
+</html>

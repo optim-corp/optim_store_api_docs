@@ -125,54 +125,86 @@
 
       <div id='site-content' class='body'>
         <div class="col-md-10">
-          <h2 id="optim-store-api-docs">OPTiM Store API Docs</h2>
+          
+<h1 id="contract-public-key-endpoint">Contract Public Key Endpoint</h1>
 
-<p>OPTiM Store では、OPTiM Store で販売してる Enterprise で利用される様々なサービスと、ID連携を行うための仕組みを用意しています。</p>
+<p>OPTiM Store のユーザー企業様が御社サービスを利用開始する際に行われる <a href="/optim_store_api_docs/contract/setup">Contract Setup API</a> の、リクエストの署名を検証する際に利用する公開鍵の公開APIです。</p>
 
-<p>すぐ買えて、すぐ使えて、すぐ繋がる。これが、Enterprise 向けサービスの新基準です。</p>
+<h2 id="request">Request</h2>
 
-<h3 id="optim-store-">OPTiM Store の提供する仕組み</h3>
+<h3 id="method">Method</h3>
 
-<p>OPTiM Store では、ID連携の機能として下記の3つの機能を提供しています。</p>
+<ul>
+  <li>GET</li>
+</ul>
 
-<ol>
-  <li>契約処理の自動化
-    <ul>
-      <li>OPTiM Store で購入したアプリケーションを、すぐ使えるようにするための仕組みです。</li>
-    </ul>
-  </li>
-  <li>ユーザー管理、ライセンス管理の自動化
-    <ul>
-      <li>OPTiM Store で契約されたユーザー情報やライセンス状態を、御社サービスに自動的に通知するための仕組みです。</li>
-      <li>SCIM 2.0 と呼ばれる、プロビジョニングの標準プロトコルをサポートしています。</li>
-    </ul>
-  </li>
-  <li>シングル・サインオン
-    <ul>
-      <li>OPTiM Store で契約されたユーザー様が、御社サービスを OPTiM Store のIDで使えるようにするための仕組みです。</li>
-      <li>OpenID Connect や SAML 2.0 と呼ばれる、フェデレーションの標準プロトコルをサポートしています。</li>
-    </ul>
-  </li>
-</ol>
+<h3 id="resource-url">Resource URL</h3>
 
-<h3 id="section">対応までのステップ</h3>
+<ul>
+  <li>URLは、OPTiM Store との契約時にご連絡いたします。</li>
+</ul>
 
-<p>下記の5ステップに対応することで、エンドユーザー様により安心・安全な Enterprise 向けサービスを提供することが出来ます。</p>
+<h3 id="header-parameters">Header Parameters</h3>
 
-<ol>
-  <li>契約処理の自動化</li>
-  <li>プロビジョニングの設定自動化</li>
-  <li>フェデレーションの設定自動化</li>
-  <li>プロビジョニング</li>
-  <li>フェデレーション</li>
-</ol>
+<div class="highlighter-rouge"><pre class="highlight"><code>Content-Type: application/json
+</code></pre>
+</div>
 
-<p>実装のチュートリアルは、<a href="/optim_store_api_docs/tutorials/get_started">Get Started</a>をご参照ください。</p>
+<h3 id="query-parameters">Query Parameters</h3>
 
-<h3 id="section-1">お問い合わせ</h3>
+<ul>
+  <li>なし</li>
+</ul>
 
-<p>本 API の仕様や使い方に関するお問い合わせは <a href="https://www.optim.co.jp/store/developer/form/">こちら</a> のフォームよりお願いします。<br />
-また、 OPTiM Store の詳細に関しましては <a href="https://www.optim.co.jp/store/">こちら</a> のサイトをご参照ください。</p>
+<h3 id="request-parameters">Request Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h2 id="response">Response</h2>
+
+<h3 id="response-code">Response Code</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>200 OK
+</code></pre>
+</div>
+
+<h3 id="response-parameters">Response Parameters</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>keys</strong></td>
+      <td>array</td>
+      <td>OPTiM Store が <a href="/optim_store_api_docs/contract/setup">Contract Setup API</a> の署名に利用する秘密鍵に対応する公開鍵(JWK形式)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="sample-body">Sample Body</h3>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"keys"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"e"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAB"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kfTsjJbaEsJKwxx40NZ2cW4KvkVHDewu0zn_wZ3BKS8"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"n"</span><span class="p">:</span><span class="w"> </span><span class="s2">"v-tEACBY3mVu80o9GaSR_I4yNEuS2HN5e0CtZY0LOkZTrES3eeHGfldn6Z7EIE65PLI3rQ30ka9ONy9CB3V8BWieRHaV_H9-xjW56XcZxTd7Ar4E8TIFmAGYtuE99dl17--YvvdDWeWYif9lf2L30fmduK-Nku9Wk_BECCb3FQ4nAea2N10O-w0GzKMKBKPe8CY8PSw7hDD5r31GeP3IZcdLQCw6cOyACeEY3GbUGFNPziho8ZkrSWIoLGvBgjIrZrdn-amSeKZqXCX7yxLlH3mUOuD7mP3Tvrem0z2oo1n5IoQYqdDdQ22W-UTVVT9cc1wQtWrc2_AQ57HhL1Lf1w"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sig"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
 
         </div>
       </div>

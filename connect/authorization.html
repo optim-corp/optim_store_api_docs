@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<head>
+  <title>OPTiM Store API Docs</title>
+  <meta charset='utf-8'/>
+  <meta name='description' content='Documentation website'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'/>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+  <link href='/optim_store_api_docs/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <link href='/optim_store_api_docs/css/pygment_highlights.css' rel='stylesheet' type='text/css'>
+  <link href='/optim_store_api_docs/css/assets.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id='sidebar'>
+        <div class="avatar">
+  <img class="avatar-img" src="/optim_store_api_docs/img/avatar-icon.png">
+</div>
+
+<a href="/optim_store_api_docs/">
+  <h1 class="text-center">OPTiM Store API Docs</h1>
+</a>
+
+<ul id='links'>
+  <li>
+    <h2>Tutorial</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/whats'>What's this?</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/get_started'>Get Started</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/tutorial'>Contract API Tutorial</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/connect_for_web'>OIDC Tutorial for Web Apps</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/connect_for_native'>OIDC Tutorial for Native Apps</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/tutorials/jose'>JOSE Tutorial</a>
+      </li>
+    </ul>
+
+    <h2>Contract API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/contract'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/public_key'>Public Key</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/setup'>Contract Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/update'>Contract Update</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/contract/destroy'>Contract Destroy</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/scim'>SCIM Client Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/connect'>OpenID Connect Client Setup</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/setup/saml'>SAML 2.0 Service Provider Setup</a>
+      </li>
+    </ul>
+
+    <h2>OpenID Connect API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/connect'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/connect/authorization'>Authorization Request</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/connect/token'>Token Request</a>
+      </li>
+    </ul>
+
+    <h2>SCIM 2.0 API</h2>
+    <ul>
+      <li>
+        <a href='/optim_store_api_docs/scim'>Introduction</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/scim/token'>Token</a>
+      </li>
+      <li>
+        <a href='/optim_store_api_docs/scim/users'>Users</a>
+      </li>
+      <li>
+        <ul>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#get'>List</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#post'>Create</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#put'>Update</a>
+          </li>
+          <li>
+            <a href='/optim_store_api_docs/scim/users#delete'>Delete</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2>
+      <a href='/optim_store_api_docs/history'>History</a>
+    </h2>
+  </li>
+</ul>
+
+      </nav>
+
+      <div id='site-content' class='body'>
+        <div class="col-md-10">
+          
+<h1 id="openid-connect-authorization-request">OpenID Connect Authorization Request</h1>
+
+<p>ユーザー様をログインするために、御社サービスから OPTiM Store へ認可リクエストを送信するAPIです。</p>
+
+<h2 id="request">Request</h2>
+
+<p>ユーザー様をログインさせるタイミングで、御社サービスから OPTiM Store の認可エンドポイント (Authorization Endpoint) へユーザー様をリダイレクトさせてください。</p>
+
+<h3 id="method">Method</h3>
+
+<ul>
+  <li>GET</li>
+</ul>
+
+<h3 id="resource-url">Resource URL</h3>
+
+<ul>
+  <li>URLは、OPTiM Store との契約時にご連絡いたします。</li>
+  <li>本章では、https://federation.optim.co.jp/connect/authorization として記載致します。</li>
+</ul>
+
+<h3 id="header-parameters">Header Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>client_id</strong></td>
+      <td>事前登録時に取得した Client ID</td>
+    </tr>
+    <tr>
+      <td><strong>scope</strong></td>
+      <td><code class="highlighter-rouge">openid</code> 固定</td>
+    </tr>
+    <tr>
+      <td><strong>response_type</strong></td>
+      <td><code class="highlighter-rouge">code</code> 固定</td>
+    </tr>
+    <tr>
+      <td><strong>redirect_uri</strong></td>
+      <td>事前登録した御社サービス側の <strong>OpenID Connect Callback URL</strong></td>
+    </tr>
+    <tr>
+      <td><strong>state</strong></td>
+      <td>御社サービス側のセッションに紐付いた任意の文字列。<code class="highlighter-rouge">redirect_uri</code> への Callback 時にそのままの値が返されるので、CSRF 対策に利用してください。</td>
+    </tr>
+    <tr>
+      <td><strong>nonce</strong></td>
+      <td>御社サービス側のセッションに紐付いた任意の文字列。後述の ID Token にそのままの値が含まれて返されるので、Code 置換攻撃対策に利用してください。</td>
+    </tr>
+    <tr>
+      <td><strong>prompt</strong></td>
+      <td>OPTiM Store 側でユーザー様にパスワード入力を強制 (強制ログイン) する場合には <code class="highlighter-rouge">login</code> という値を指定してください。それ以外の場合にはこのパラメータは不要です。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="sample-body">Sample Body</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="concept-code">Concept Code</h3>
+
+<p>以下に Ruby での Authorization Request 送信のコンセプトコードを記載します。(実際の利用時には OpenID Connect ライブラリ等の利用を推奨します)</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">client_id: </span><span class="s1">'&lt;your-client-id-for-the-tenant&gt;'</span><span class="p">,</span>
+  <span class="ss">scope: </span><span class="s1">'openid'</span><span class="p">,</span>
+  <span class="ss">response_type: </span><span class="s1">'code'</span><span class="p">,</span>
+  <span class="ss">redirect_uri: </span><span class="s1">'https://your-service.example.com/optim-store/callback'</span><span class="p">,</span>
+  <span class="ss">state: </span><span class="s1">'&lt;session-binded-opaque-value&gt;'</span><span class="p">,</span>
+  <span class="ss">nonce: </span><span class="s1">'&lt;session-binded-opaque-value&gt;'</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">authorization_endpoint</span> <span class="o">=</span> <span class="s1">'https://federation.optim.co.jp/connect/authorization'</span>
+
+<span class="n">authorization_endpoint_with_request_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">authorization_endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">.</span><span class="nf">to_query</span><span class="p">].</span><span class="nf">join</span><span class="p">(</span><span class="s1">'?'</span><span class="p">)</span>
+<span class="c1"># https://federation.optim.co.jp/connect/authorization?</span>
+<span class="c1">#   client_id=%3Cyour-client-id-for-the-tenant%3E&amp;</span>
+<span class="c1">#   redirect_uri=https%3A%2F%2Fyour-service.example.com%2Foptim-store%2Fcallback&amp;</span>
+<span class="c1">#   response_type=code&amp;scope=openid&amp;state=xxx&amp;nonce=yyy</span>
+
+<span class="n">redirect_to</span> <span class="n">authorization_endpoint_with_request_params</span>
+</code></pre>
+</div>
+
+<p>これにより、ユーザー様は、自身の端末上のブラウザで、OPTiM Store のログインページにアクセスすることになります。</p>
+
+<h2 id="response">Response</h2>
+
+<p>正しく Authorization Request が送信された場合、ユーザー様には OPTiM Store へのログイン画面が表示されます(既にOPTiM Storeヘログインしている場合は、スキップされます)。<br />
+ユーザー様のログインが完了しましたら、下記の仕様に基いて御社サービス側の <code class="highlighter-rouge">Callback URL</code>にリダイレクトにてアクセスいたします。</p>
+
+<p>リクエストに問題がない場合は、 御社サービスより <a href="/optim_store_api_docs/connect/token">Token Request</a> へのアクセスを行い、処理の続きを行ってください。</p>
+
+<h3 id="resource-url-1">Resource URL</h3>
+
+<ul>
+  <li>任意のURL
+    <ul>
+      <li>該当URLを、<a href="/optim_store_api_docs/setup/connect">OpenID Connect Client Setup</a>の<code class="highlighter-rouge">redirect_uris</code>として登録してください。</li>
+    </ul>
+  </li>
+  <li>本章では、https://your-service.example.com/connect/callback として記載致します。</li>
+</ul>
+
+<h3 id="header-parameters-1">Header Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="query-parameters-1">Query Parameters</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>https://your-service.example.com/optim-store/callback?code=&lt;onetime-token&gt;&amp;state=&lt;exact-value-you-sent&gt;
+</code></pre>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>code</strong></td>
+      <td>OpenID Connect における認可コードです。<a href="/optim_store_api_docs/connect/token">Token Request</a> で利用します。</td>
+    </tr>
+    <tr>
+      <td><strong>state</strong></td>
+      <td><a href="/optim_store_api_docs/connect/authorization">Authorization Request</a> で送付された<code class="highlighter-rouge">state</code>と同じ値です。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="highlighter-rouge">code</code> は次のセッションで認証結果を取得する際に必要になります。<br />
+なお、<code class="highlighter-rouge">state</code> がリクエスト送信時のブラウザセッションと紐付いていない場合は CSRF 攻撃の可能性があるため、その Callback リクエストはエラーとして受け付けないようにしてください。</p>
+
+<h3 id="error-request">Error Request</h3>
+
+<p><code class="highlighter-rouge">code</code> が付与されていない場合は、ユーザーのログイン失敗等によるエラーレスポンスです。その場合は <code class="highlighter-rouge">error</code> というパラメータが付与されています。</p>
+
+<p>以下にエラー時のリダイレクト URL の例を記載します。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>https://your-service.example.com/optim-store/callback?error=access_denied&amp;state=&lt;exact-value-you-sent&gt;
+</code></pre>
+</div>
+
+<h3 id="request-parameters-1">Request Parameters</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+<h3 id="sample-body-1">Sample Body</h3>
+
+<ul>
+  <li>なし</li>
+</ul>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--[if lt IE 9]><script src='http://html5shim.googlecode.com/svn/trunk/html5.js'></script><![endif]-->
+  <script src='/optim_store_api_docs/assets.js' type='text/javascript'></script>
+  <script>require('boot');</script>
+</body>
+</html>
