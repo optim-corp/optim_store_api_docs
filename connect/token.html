@@ -143,7 +143,7 @@ Callback 時に受け取った Authorization Code を OPTiM Store の Token Endp
 
 <ul>
   <li>URLは、OPTiM Store との契約時にご連絡いたします。</li>
-  <li>本章では、https://federation.optim.co.jp/connect/token として記載致します。</li>
+  <li>本章では、https://store-xyz-federation.optim.co.jp/connect/token として記載致します。</li>
 </ul>
 
 <h3 id="header-parameters">Header Parameters</h3>
@@ -208,7 +208,7 @@ Callback 時に受け取った Authorization Code を OPTiM Store の Token Endp
   <span class="ss">code: </span><span class="s1">'&lt;onetime-token&gt;'</span><span class="p">,</span>
   <span class="ss">redirect_uri: </span><span class="s1">'https://your-service.example.com/optim-store/callback'</span>
 <span class="p">}</span>
-<span class="n">token_endpoint</span> <span class="o">=</span> <span class="s1">'https://federation.optim.co.jp/connect/token'</span>
+<span class="n">token_endpoint</span> <span class="o">=</span> <span class="s1">'https://store-xyz-federation.optim.co.jp/connect/token'</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="no">HTTPClient</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span><span class="n">token_endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 <span class="n">response</span><span class="p">.</span><span class="nf">body</span>
@@ -288,7 +288,7 @@ Callback 時に受け取った Authorization Code を OPTiM Store の Token Endp
 
 <span class="n">id_token</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span> <span class="s1">'&lt;id-token&gt;'</span><span class="p">,</span> <span class="ss">:skip_verification</span>
 <span class="c1"># {</span>
-<span class="c1">#   "iss": "https://federation.optim.co.jp",</span>
+<span class="c1">#   "iss": "https://store-xyz-federation.optim.co.jp",</span>
 <span class="c1">#   "aud": "&lt;your-client-id-for-the-tenant&gt;",</span>
 <span class="c1">#   "sub": "&lt;optim-store-user-guid&gt;",</span>
 <span class="c1">#   "nonce": "&lt;session-binded-opaque-value&gt;",</span>
@@ -311,7 +311,7 @@ Callback 時に受け取った Authorization Code を OPTiM Store の Token Endp
   <tbody>
     <tr>
       <td><strong>iss</strong></td>
-      <td>Token 発行者 (issuer) の識別子です。<code class="highlighter-rouge">https://federation.optim.co.jp</code> 固定です。</td>
+      <td>Token 発行者 (issuer) の識別子です。<code class="highlighter-rouge">https://store-xyz-federation.optim.co.jp</code> 固定です。</td>
     </tr>
     <tr>
       <td><strong>aud</strong></td>
@@ -343,7 +343,7 @@ Callback 時に受け取った Authorization Code を OPTiM Store の Token Endp
 <p>ID Token に含まれる上記の属性値を以下の通り検証してください。</p>
 
 <ul>
-  <li><code class="highlighter-rouge">iss</code> が <code class="highlighter-rouge">https://federation.optim.co.jp</code> と一致すること。</li>
+  <li><code class="highlighter-rouge">iss</code> が <code class="highlighter-rouge">https://store-xyz-federation.optim.co.jp</code> と一致すること。</li>
   <li><code class="highlighter-rouge">aud</code> が該当テナントに発行された Client ID と一致すること。</li>
   <li><code class="highlighter-rouge">nonce</code> が認可リクエスト送信時に指定した値と一致すること。</li>
   <li><code class="highlighter-rouge">exp</code> が未来の日時であること。</li>

@@ -137,10 +137,19 @@
 <p>SCIM Client 登録および OpenID Connect Client / SAML Service Provider 登録を手動で行う場合には、この API Endpoint は不要です。</p>
 
 <h2 id="section">事前設定項目</h2>
-<p>以降、本ドキュメントでは、OPTiM Store の URL を以下の値と仮定して説明を進めます。</p>
+
+<p>以降、本ドキュメントでは、OPTiM Store の URL を以下と仮定して説明を進めます。(実際には OPTiM Store の販社様ごとに異なる URL となります)</p>
 
 <ul>
-  <li>https://optim-store.optim.co.jp</li>
+  <li><a href="https://store-xyz.optim.co.jp">https://store-xyz.optim.co.jp</a></li>
+</ul>
+
+<p>また、OPTiM Store では、場面に応じて以下の3つのサーバーが連動して動くようになっています。</p>
+
+<ul>
+  <li>Store Web　(e.g. <a href="https://store-xyz.optim.co.jp">https://store-xyz.optim.co.jp</a>)</li>
+  <li>Store API (a.k.a. Biz, e.g. <a href="https://store-xyz-api.optim.co.jp">https://store-xyz-api.optim.co.jp</a>)</li>
+  <li>Store Federation (<a href="https://store-xyz-federation.optim.co.jp">https://store-xyz-federation.optim.co.jp</a>)</li>
 </ul>
 
 <p>OPTiM Store へのアプリ登録時に、御社サービス側の <strong>Tenant Contract API Endpoint</strong> を設定していただく必要があります。(HTTPS 必須)</p>
@@ -148,7 +157,7 @@
 <p>以降、本ドキュメントでは、御社サービス側の Tenant Contract API Endpoint を以下の値と仮定して説明を進めます。</p>
 
 <ul>
-  <li>https://your-service.example.com/contract/api</li>
+  <li><a href="https://your-service.example.com/contract/api">https://your-service.example.com/contract/api</a></li>
 </ul>
 
 <p>また OPTiM Store から送られてくる Tenant Contract Setup Request の署名検証に利用するため、契約時に送付される URL から OPTiM Store の Public Key を取得しておいてください。</p>
@@ -156,7 +165,7 @@
 <p>以降、本ドキュメントでは、OPTiM Store の Public key URL を以下の値と仮定して説明を進めます。</p>
 
 <ul>
-  <li><a href="https://optim-store.optim.co.jp/jwks.json">https://optim-store.optim.co.jp/jwks.json</a></li>
+  <li><a href="https://store-xyz-api.optim.co.jp/api/idp/contract/jwks">https://store-xyz-api.optim.co.jp/api/idp/contract/jwks</a></li>
 </ul>
 
 <p>この鍵は定期的に更新される可能性があるため、後述の署名付き JSON データに含まれる <strong>鍵 ID (kid)</strong> をもとに、必要に応じて上記 URL から鍵を動的に取得できるような実装をお願いします。</p>
@@ -168,7 +177,7 @@
 <p>契約開始時に、OPTiM Store から御社サービスの Tenant Contract API Endpoint に以下のような JSON データを送ります。(実際には以下の JSON に JWS 仕様にしたがって署名したデータが送られます)</p>
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz.optim.co.jp"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"company"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f46f9970c914af9a22491402aa9eedc4a9645f2d2a303a39867c304ba461c47f"</span><span class="p">,</span><span class="w">
@@ -231,7 +240,7 @@
   </tbody>
 </table>
 
-<p>注) <strong>contract_jwk</strong> はテナント契約ごとに個別に生成される鍵であり、<strong>https://optim-store.optim.co.jp/jwks.json</strong> に公開されている OPTiM Store の公開鍵は異なります。<strong>contract_jwk</strong> の <strong>kid</strong> は JWK Thumbprint 値となっています。この <strong>contract_jwk</strong> およびその <strong>kid</strong> 値は後述の契約内容変更通知リクエストの検証のために利用することになるため、御社サービス側で当該テナント契約と紐付けて保存しておいてください。</p>
+<p>注) <strong>contract_jwk</strong> はテナント契約ごとに個別に生成される鍵であり、<strong>https://store-xyz-api.optim.co.jp/api/idp/contract/jwks</strong> に公開されている OPTiM Store の公開鍵は異なります。<strong>contract_jwk</strong> の <strong>kid</strong> は JWK Thumbprint 値となっています。この <strong>contract_jwk</strong> およびその <strong>kid</strong> 値は後述の契約内容変更通知リクエストの検証のために利用することになるため、御社サービス側で当該テナント契約と紐付けて保存しておいてください。</p>
 
 <h3 id="section-1">署名付きリクエスト</h3>
 
@@ -252,7 +261,7 @@
 <p><strong>JWS Payload 例</strong></p>
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz.optim.co.jp"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"company"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f46f9970c914af9a22491402aa9eedc4a9645f2d2a303a39867c304ba461c47f"</span><span class="p">,</span><span class="w">
@@ -303,7 +312,7 @@
 
 <span class="c1"># NOTE: "kid" に紐づく OPTiM Store Public Key を取得 (cache から取得可能な場合は skip 可能)</span>
 <span class="n">jwk</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span>
-  <span class="no">HTTPClient</span><span class="p">.</span><span class="nf">get_content</span><span class="p">(</span><span class="s1">'https://optim-store.optim.co.jp/jwks.json'</span><span class="p">)</span>
+  <span class="no">HTTPClient</span><span class="p">.</span><span class="nf">get_content</span><span class="p">(</span><span class="s1">'https://store-xyz-api.optim.co.jp/api/idp/contract/jwks'</span><span class="p">)</span>
 <span class="p">)[</span><span class="s1">'keys'</span><span class="p">].</span><span class="nf">detect</span> <span class="k">do</span> <span class="o">|</span><span class="n">jwk</span><span class="o">|</span>
   <span class="n">jwk</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">]</span> <span class="o">==</span> <span class="n">kid</span>
 <span class="k">end</span>
@@ -324,7 +333,7 @@
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz.optim.co.jp"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"contract_jwk"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"u67PW3Rc0To3t_4fPz3Cwb0fuxICXXhI8SwBnak4C6Q"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RSA"</span><span class="p">,</span><span class="w">

@@ -246,15 +246,14 @@ oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
 <div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="n">jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span> <span class="n">jwt_string</span><span class="p">,</span> <span class="ss">:skip_verification</span>
 <span class="n">jwt</span><span class="p">.</span><span class="nf">kid</span> <span class="c1"># =&gt; "2wKYU..(中略)..yaFzY"</span>
 
-<span class="c1"># TODO: ここで JWT Header の kid を元にテナント契約の特定を行い、contract_jwk をロードします。</span>
-<span class="n">contract_jwk</span> <span class="o">=</span> <span class="p">{</span>
+<span class="n">public_jwk_components</span> <span class="o">=</span> <span class="p">{</span>
   <span class="ss">kty: </span><span class="s1">'RSA'</span><span class="p">,</span>
   <span class="ss">e: </span><span class="s1">'AQAB'</span><span class="p">,</span>
   <span class="ss">n: </span><span class="s1">'pG82-..(中略)..wgGLQ'</span><span class="p">,</span>
   <span class="ss">kid: </span><span class="s1">'2wKYU..(中略)..yaFzY'</span>
 <span class="p">}</span>
 
-<span class="n">public_jwk</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWK</span><span class="p">.</span><span class="nf">new</span> <span class="n">contract_jwk</span>
+<span class="n">public_jwk</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWK</span><span class="p">.</span><span class="nf">new</span> <span class="n">public_jwk_components</span>
 <span class="n">jwt</span> <span class="o">=</span> <span class="no">JSON</span><span class="o">::</span><span class="no">JWT</span><span class="p">.</span><span class="nf">decode</span> <span class="n">jwt_string</span><span class="p">,</span> <span class="n">public_key</span>
 </code></pre>
 </div>
@@ -270,7 +269,7 @@ oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
 <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
 <span class="nv">$public_key</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">phpseclib\Crypt\RSA</span><span class="p">();</span>
 <span class="nv">$public_key</span><span class="o">-&gt;</span><span class="na">loadKey</span><span class="p">(</span><span class="s1">'-----BEGIN RSA PUBLIC KEY-----\n...'</span><span class="p">);</span>
-<span class="nv">$jwk</span> <span class="o">=</span> <span class="nx">JOSE_JWK</span><span class="o">::</span><span class="na">encode</span><span class="p">(</span><span class="nv">$public_key</span><span class="p">);</span>
+<span class="nv">$public_jwk</span> <span class="o">=</span> <span class="nx">JOSE_JWK</span><span class="o">::</span><span class="na">encode</span><span class="p">(</span><span class="nv">$public_key</span><span class="p">);</span>
 </code></pre>
 </div>
 
@@ -314,22 +313,18 @@ oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
 <p>Contract API Request や SCIM Client Registration Request の検証時には、署名付き JWT の署名検証を行います。</p>
 
 <div class="language-php highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;?php</span>
-<span class="nv">$public_key</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">phpseclib\Crypt\RSA</span><span class="p">();</span>
-<span class="nv">$public_key</span><span class="o">-&gt;</span><span class="na">loadKey</span><span class="p">(</span><span class="s1">'-----BEGIN RSA PUBLIC KEY-----\n...'</span><span class="p">);</span>
-
 <span class="nv">$jwt_string</span> <span class="o">=</span> <span class="s1">'eyJ0eXAi..(中略).._pBTA'</span><span class="p">;</span>
 <span class="nv">$jwt</span> <span class="o">=</span> <span class="nx">JOSE_JWT</span><span class="o">::</span><span class="na">decode</span><span class="p">(</span><span class="nv">$jwt_string</span><span class="p">);</span>
 <span class="k">echo</span> <span class="nv">$jwt</span><span class="o">-&gt;</span><span class="na">header</span><span class="p">[</span><span class="s1">'kid'</span><span class="p">];</span> <span class="c1"># =&gt; "2wKYU..(中略)..yaFzY";
 </span>
-<span class="c1"># TODO: ここで JWT Header の kid を元にテナント契約の特定を行い、contract_jwk をロードします。
-</span><span class="nv">$jwk_components</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+<span class="nv">$public_jwk_components</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
   <span class="nx">kty</span><span class="o">:</span> <span class="s1">'RSA'</span><span class="p">,</span>
   <span class="nx">e</span><span class="o">:</span> <span class="s1">'AQAB'</span><span class="p">,</span>
   <span class="nx">n</span><span class="o">:</span> <span class="s1">'pG82-..(中略)..wgGLQ'</span><span class="p">,</span>
   <span class="nx">kid</span><span class="o">:</span> <span class="s1">'2wKYU..(中略)..yaFzY'</span>
 <span class="p">);</span>
 
-<span class="nv">$public_jwk</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JOSE_JWK</span><span class="p">(</span><span class="nv">$jwk_components</span><span class="p">);</span>
+<span class="nv">$public_jwk</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JOSE_JWK</span><span class="p">(</span><span class="nv">$public_jwk_components</span><span class="p">);</span>
 <span class="nv">$jwt</span><span class="o">-&gt;</span><span class="na">verify</span><span class="p">(</span><span class="nv">$public_jwk</span><span class="p">,</span> <span class="s1">'RS256'</span><span class="p">);</span>
 </code></pre>
 </div>
@@ -425,6 +420,8 @@ oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
 <span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">javax.crypto.*</span><span class="o">;</span>
 
+<span class="kn">import</span> <span class="nn">net.minidev.json.JSONObject</span><span class="o">;</span>
+
 <span class="kn">import</span> <span class="nn">com.nimbusds.jose.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.nimbusds.jose.jwk.RSAKey</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.nimbusds.jose.crypto.*</span><span class="o">;</span>
@@ -432,14 +429,12 @@ oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
 
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">JWTVerify</span> <span class="o">{</span>
   <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="n">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="c1">// NOTE: 実際には DB などから適宜鍵を取得するようにしてください。</span>
-    <span class="n">KeyPairGenerator</span> <span class="n">keyGenerator</span> <span class="o">=</span> <span class="n">KeyPairGenerator</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="s">"RSA"</span><span class="o">);</span>
-    <span class="n">keyGenerator</span><span class="o">.</span><span class="na">initialize</span><span class="o">(</span><span class="mi">2048</span><span class="o">);</span>
-    <span class="n">KeyPair</span> <span class="n">kp</span> <span class="o">=</span> <span class="n">keyGenerator</span><span class="o">.</span><span class="na">genKeyPair</span><span class="o">();</span>
-    <span class="n">RSAPublicKey</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">RSAPublicKey</span><span class="o">)</span><span class="n">kp</span><span class="o">.</span><span class="na">getPublic</span><span class="o">();</span>
-    <span class="n">RSAPrivateKey</span> <span class="n">privateKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">RSAPrivateKey</span><span class="o">)</span><span class="n">kp</span><span class="o">.</span><span class="na">getPrivate</span><span class="o">();</span>
+    <span class="n">String</span> <span class="n">jwkString</span> <span class="o">=</span> <span class="s">"{\"kty\":\"RSA\",\"e\":\"AQAB\",...}"</span><span class="o">;</span>
+    <span class="n">JSONObject</span> <span class="n">pubicJwkComponents</span> <span class="o">=</span> <span class="o">(</span><span class="n">JSONObject</span><span class="o">)</span> <span class="n">JSONSerializer</span><span class="o">.</span><span class="na">toJSON</span><span class="o">(</span><span class="n">jwkString</span><span class="o">);</span>
+    <span class="n">RSAKey</span> <span class="n">rsaKey</span> <span class="o">=</span> <span class="n">RSAKey</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">pubicJwkComponents</span><span class="o">);</span>
+    <span class="n">RSAPublicKey</span> <span class="n">publicKey</span> <span class="o">=</span> <span class="o">(</span><span class="n">RSAPublicKey</span><span class="o">)</span> <span class="n">rsaKey</span><span class="o">.</span><span class="na">toPublicKey</span><span class="o">();</span>
 
-    <span class="n">String</span> <span class="n">signedJWTString</span> <span class="o">=</span> <span class="n">generateSignedJWT</span><span class="o">(</span><span class="n">privateKey</span><span class="o">,</span> <span class="n">publicKey</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">signedJWTString</span> <span class="o">=</span> <span class="s">"eyJ0eXAi..(中略).._pBTA"</span><span class="o">;</span>
     <span class="n">SignedJWT</span> <span class="n">signedJWT</span> <span class="o">=</span> <span class="n">SignedJWT</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">signedJWTString</span><span class="o">);</span>
     <span class="n">JWSVerifier</span> <span class="n">verifier</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RSASSAVerifier</span><span class="o">(</span><span class="n">publicKey</span><span class="o">);</span>
 
@@ -449,25 +444,6 @@ oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
     <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
       <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Verification Failed!"</span><span class="o">);</span>
     <span class="o">}</span>
-  <span class="o">}</span>
-
-  <span class="kd">private</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">generateSignedJWT</span><span class="o">(</span><span class="n">RSAPrivateKey</span> <span class="n">privateKey</span><span class="o">,</span> <span class="n">RSAPublicKey</span> <span class="n">publicKey</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="n">JWTClaimsSet</span> <span class="n">payload</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JWTClaimsSet</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
-      <span class="o">.</span><span class="na">claim</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="s">"bar"</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">claim</span><span class="o">(</span><span class="s">"hoge"</span><span class="o">,</span> <span class="s">"fuga"</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-    <span class="n">RSAKey</span> <span class="n">jwk</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RSAKey</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">publicKey</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">keyIDFromThumbprint</span><span class="o">()</span>
-      <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-    <span class="n">JWSHeader</span> <span class="n">header</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JWSHeader</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">JWSAlgorithm</span><span class="o">.</span><span class="na">RS256</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">keyID</span><span class="o">(</span><span class="n">jwk</span><span class="o">.</span><span class="na">getKeyID</span><span class="o">())</span>
-      <span class="o">.</span><span class="na">type</span><span class="o">(</span><span class="n">JOSEObjectType</span><span class="o">.</span><span class="na">JWT</span><span class="o">)</span>
-      <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-    <span class="n">JWSSigner</span> <span class="n">signer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RSASSASigner</span><span class="o">(</span><span class="n">privateKey</span><span class="o">);</span>
-    <span class="n">SignedJWT</span> <span class="n">signedJWT</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SignedJWT</span><span class="o">(</span><span class="n">header</span><span class="o">,</span> <span class="n">payload</span><span class="o">);</span>
-    <span class="n">signedJWT</span><span class="o">.</span><span class="na">sign</span><span class="o">(</span><span class="n">signer</span><span class="o">);</span>
-
-    <span class="k">return</span> <span class="n">signedJWT</span><span class="o">.</span><span class="na">serialize</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre>
@@ -531,8 +507,12 @@ oMLvCmb7301JqWQRpYJ6WcyPchuMJ0x70WMqENXoBFYi1Sfnt864uXo=
 <p>Contract API Request や SCIM Client Registration Request の検証時には、署名付き JWT の署名検証を行います。</p>
 
 <div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">jwtString</span> <span class="o">=</span> <span class="s2">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXV...(後略)"</span><span class="p">;</span>
-
-<span class="kd">var</span> <span class="nx">pem</span> <span class="o">=</span> <span class="s2">"-----BEGIN PUBLIC KEY-----\nMIIBIjANBgk...(後略)"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">public_jwk_component</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">kty</span><span class="p">:</span> <span class="s1">'RSA'</span><span class="p">,</span>
+  <span class="na">e</span><span class="p">:</span> <span class="s1">'AQAB'</span><span class="p">,</span>
+  <span class="na">n</span><span class="p">:</span> <span class="s1">'pG82-..(中略)..wgGLQ'</span><span class="p">,</span>
+  <span class="na">kid</span><span class="p">:</span> <span class="s1">'2wKYU..(中略)..yaFzY'</span>
+<span class="p">};</span>
 
 <span class="kd">var</span> <span class="nx">pubKey</span> <span class="o">=</span> <span class="nx">KEYUTIL</span><span class="p">.</span><span class="nx">getKey</span><span class="p">(</span><span class="nx">pem</span><span class="p">);</span>
 <span class="kd">var</span> <span class="nx">isValid</span> <span class="o">=</span> <span class="nx">KJUR</span><span class="p">.</span><span class="nx">jws</span><span class="p">.</span><span class="nx">JWS</span><span class="p">.</span><span class="nx">verify</span><span class="p">(</span><span class="nx">jwtString</span><span class="p">,</span> <span class="nx">pubKey</span><span class="p">,</span> <span class="s1">'RS256'</span><span class="p">);</span>

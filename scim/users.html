@@ -148,12 +148,12 @@ SCIM Server として御社サービス側に実装して頂く必要のある�
   </thead>
   <tbody>
     <tr>
-      <td>https://[hostname]/scim/v1/Users</td>
+      <td>https://your-service.example.com/scim/v1/Users</td>
       <td>利用者情報</td>
       <td>POST(追加)・GET(検索)</td>
     </tr>
     <tr>
-      <td>https://[hostname]/scim/v1/Users/:id</td>
+      <td>https://your-service.example.com/scim/v1/Users/:id</td>
       <td>利用者情報</td>
       <td>PUT(更新)・DELETE(削除)</td>
     </tr>
@@ -173,7 +173,7 @@ SCIM Server として御社サービス側に実装して頂く必要のある�
   </li>
 </ul>
 
-<h3 id="section-1">利用者スキーマ情報</h3>
+<h3 id="schema">利用者スキーマ情報</h3>
 <ul>
   <li>SCIMで利用する、利用者のスキーマ情報は下表のとおりです。</li>
 </ul>
@@ -392,7 +392,7 @@ Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
   <li>なし</li>
 </ul>
 
-<h3 id="section-2">処理内容</h3>
+<h3 id="section-1">処理内容</h3>
 
 <ol>
   <li>アクセストークンが正しい値であるか確認します。</li>
@@ -448,6 +448,10 @@ Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
 
 <h3 id="sample-body">Sample Body</h3>
 
+<ul>
+  <li>(中略) 部分の属性は、<a href="#schema">利用者スキーマ情報</a>を参照してください。</li>
+</ul>
+
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"urn:ietf:params:scim:api:messages:2.0:ListResponse"</span><span class="w">
@@ -459,7 +463,9 @@ Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
                 </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
             </span><span class="p">],</span><span class="w">
             </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b3603063-2801-4c8c-b602-a142efe7ad6a"</span><span class="p">,</span><span class="w">
-            </span><span class="err">※属性を記載する</span><span class="w">
+            </span><span class="nt">"externalId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"856ab134c84f7b83cd19f456e74384d1af3f061755ca39eebba4050e900f5907"</span><span class="p">,</span><span class="w">
+            </span><span class="err">(中略)</span><span class="w">
+            </span><span class="nt">"bizSpCompanyCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"optim"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
                 </span><span class="nt">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-09-02T05:38:35.114Z"</span><span class="p">,</span><span class="w">
@@ -536,16 +542,22 @@ Authorization: Bearer MDNhNTlhN2ItYmE1NC00OWQ3LWFkMzQtODliYjhhN2Q0Mjlh
 
 <h3 id="sample-body-1">Sample Body</h3>
 
+<ul>
+  <li>(中略) 部分の属性は、<a href="#schema">利用者スキーマ情報</a>を参照してください。</li>
+</ul>
+
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
     </span><span class="p">],</span><span class="w">
-    </span><span class="err">※属性を記載する</span><span class="w">
+    </span><span class="nt">"externalId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"856ab134c84f7b83cd19f456e74384d1af3f061755ca39eebba4050e900f5907"</span><span class="p">,</span><span class="w">
+    </span><span class="err">(中略)</span><span class="w">
+    </span><span class="nt">"bizSpCompanyCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"optim"</span><span class="p">,</span><span class="w">
 </span><span class="err">}</span><span class="w">
 </span></code></pre>
 </div>
 
-<h3 id="section-3">処理内容</h3>
+<h3 id="section-2">処理内容</h3>
 <ol>
   <li>アクセストークンが正しい値であるか確認します。</li>
   <li>アクセストークンから対象のテナントを特定します。</li>
@@ -600,11 +612,18 @@ Location: https://your-service.example.com/scim/v1/Users/8f848134-3f6f-4432-9db7
 
 <h3 id="sample-body-2">Sample Body</h3>
 
+<ul>
+  <li>(中略) 部分の属性は、<a href="#schema">利用者スキーマ情報</a>を参照してください。</li>
+</ul>
+
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
     </span><span class="p">],</span><span class="w">
-    </span><span class="err">※属性を記載する</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b3603063-2801-4c8c-b602-a142efe7ad6a"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"externalId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"856ab134c84f7b83cd19f456e74384d1af3f061755ca39eebba4050e900f5907"</span><span class="p">,</span><span class="w">
+    </span><span class="err">(中略)</span><span class="w">
+    </span><span class="nt">"bizSpCompanyCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"optim"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nt">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-10-15T17:50:51.316Z"</span><span class="p">,</span><span class="w">
@@ -683,16 +702,22 @@ Authorization: Bearer MDNhNTlhN2ItYmE1NC00OWQ3LWFkMzQtODliYjhhN2Q0Mjlh
 
 <h3 id="sample-body-3">Sample Body</h3>
 
+<ul>
+  <li>(中略) 部分の属性は、<a href="#schema">利用者スキーマ情報</a>を参照してください。</li>
+</ul>
+
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
     </span><span class="p">],</span><span class="w">
-    </span><span class="err">※属性を記載する</span><span class="w">
+    </span><span class="nt">"externalId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"856ab134c84f7b83cd19f456e74384d1af3f061755ca39eebba4050e900f5907"</span><span class="p">,</span><span class="w">
+    </span><span class="err">(中略)</span><span class="w">
+    </span><span class="nt">"bizSpCompanyCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"optim"</span><span class="p">,</span><span class="w">
 </span><span class="err">}</span><span class="w">
 </span></code></pre>
 </div>
 
-<h3 id="section-4">処理内容</h3>
+<h3 id="section-3">処理内容</h3>
 
 <ol>
   <li>アクセストークンが正しい値であるか確認します。</li>
@@ -743,11 +768,18 @@ Location: https://your-service.example.com/scim/v1/Users/8f848134-3f6f-4432-9db7
 
 <h3 id="sample-body-4">Sample Body</h3>
 
+<ul>
+  <li>(中略) 部分の属性は、<a href="#schema">利用者スキーマ情報</a>を参照してください。</li>
+</ul>
+
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"schemas"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"urn:x-optim:scim:schemas:extention:cim:1.0:User"</span><span class="w">
     </span><span class="p">],</span><span class="w">
-    </span><span class="err">※属性を記載する</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"b3603063-2801-4c8c-b602-a142efe7ad6a"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"externalId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"856ab134c84f7b83cd19f456e74384d1af3f061755ca39eebba4050e900f5907"</span><span class="p">,</span><span class="w">
+    </span><span class="err">(中略)</span><span class="w">
+    </span><span class="nt">"bizSpCompanyCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"optim"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nt">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2014-10-15T17:50:51.316Z"</span><span class="p">,</span><span class="w">
@@ -817,7 +849,7 @@ Authorization: Bearer MDNhNTlhN2ItYmE1NC00OWQ3LWFkMzQtODliYjhhN2Q0Mjlh
 
 <h3 id="sample-body-5">Sample Body</h3>
 
-<h3 id="section-5">処理内容</h3>
+<h3 id="section-4">処理内容</h3>
 <ol>
   <li>アクセストークンが正しい値であるか確認します。</li>
   <li>アクセストークンから対象のテナントを特定します。</li>

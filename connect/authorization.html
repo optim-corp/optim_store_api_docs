@@ -144,7 +144,7 @@
 
 <ul>
   <li>URLは、OPTiM Store との契約時にご連絡いたします。</li>
-  <li>本章では、https://federation.optim.co.jp/connect/authorization として記載致します。</li>
+  <li>本章では、https://store-xyz-federation.optim.co.jp/connect/authorization として記載致します。</li>
 </ul>
 
 <h3 id="header-parameters">Header Parameters</h3>
@@ -218,10 +218,10 @@
   <span class="ss">state: </span><span class="s1">'&lt;session-binded-opaque-value&gt;'</span><span class="p">,</span>
   <span class="ss">nonce: </span><span class="s1">'&lt;session-binded-opaque-value&gt;'</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="n">authorization_endpoint</span> <span class="o">=</span> <span class="s1">'https://federation.optim.co.jp/connect/authorization'</span>
+<span class="n">authorization_endpoint</span> <span class="o">=</span> <span class="s1">'https://store-xyz-federation.optim.co.jp/connect/authorization'</span>
 
 <span class="n">authorization_endpoint_with_request_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">authorization_endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">.</span><span class="nf">to_query</span><span class="p">].</span><span class="nf">join</span><span class="p">(</span><span class="s1">'?'</span><span class="p">)</span>
-<span class="c1"># https://federation.optim.co.jp/connect/authorization?</span>
+<span class="c1"># https://store-xyz-federation.optim.co.jp/connect/authorization?</span>
 <span class="c1">#   client_id=%3Cyour-client-id-for-the-tenant%3E&amp;</span>
 <span class="c1">#   redirect_uri=https%3A%2F%2Fyour-service.example.com%2Foptim-store%2Fcallback&amp;</span>
 <span class="c1">#   response_type=code&amp;scope=openid&amp;state=xxx&amp;nonce=yyy</span>
@@ -247,7 +247,7 @@
       <li>該当URLを、<a href="/optim_store_api_docs/setup/connect">OpenID Connect Client Setup</a>の<code class="highlighter-rouge">redirect_uris</code>として登録してください。</li>
     </ul>
   </li>
-  <li>本章では、https://your-service.example.com/connect/callback として記載致します。</li>
+  <li>本章では、https://your-service.example.com/optim-store/callback として記載致します。</li>
 </ul>
 
 <h3 id="header-parameters-1">Header Parameters</h3>

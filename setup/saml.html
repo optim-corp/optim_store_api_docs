@@ -143,7 +143,7 @@ OPTiM Store では、<a href="/optim_store_api_docs/setup/connect">OpenID Connec
 
 <ul>
   <li>URLは、OPTiM Store との契約時にご連絡いたします。</li>
-  <li>本章では、https://optim-store.optim.co.jp/saml2/service_providers として記載致します。</li>
+  <li>本章では、https://store-xyz-api.optim.co.jp/saml2/service_providers として記載致します。</li>
 </ul>
 
 <h3 id="header-parameters">Header Parameters</h3>
@@ -248,10 +248,10 @@ OPTiM Store では、<a href="/optim_store_api_docs/setup/connect">OpenID Connec
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://optim-store.optim.co.jp/saml2/service_providers"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/saml2"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz-api.optim.co.jp/saml2/service_providers"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/optim-store"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"nameid_format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"persistent"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/saml2/callback"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/optim-store/callback"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464053706</span><span class="p">,</span><span class="w">
   </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1464054306</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -315,10 +315,10 @@ OPTiM Store では、<a href="/optim_store_api_docs/setup/connect">OpenID Connec
 <h3 id="sample-body-1">Sample Body</h3>
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://federation.optim.co.jp/saml2/o4K32SHuf0uQ1lbOD7GglC3GSaOrfDuzqASwHU0OQBs/assertion"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz-federation.optim.co.jp/saml2/:tenant_id/assertion"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"single_sign_of_service"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"binding"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http_redirect"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://federation.optim.co.jp/saml2/o4K32SHuf0uQ1lbOD7GglC3GSaOrfDuzqASwHU0OQBs/assertion"</span><span class="w">
+    </span><span class="nt">"location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz-federation.optim.co.jp/saml2/:tenant_id/assertion"</span><span class="w">
   </span><span class="p">},</span><span class="w">
   </span><span class="nt">"nameid_format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"persistent"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"certificate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n"</span><span class="p">,</span><span class="w">
