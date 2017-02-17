@@ -125,8 +125,7 @@
 
       <div id='site-content' class='body'>
         <div class="col-md-10">
-          
-<h2 id="oauth-api">OAuth API</h2>
+          <h2 id="oauth-api">OAuth API</h2>
 <p>SCIM の API は OAuth 2.0 で保護されています。<br />
 OPTiM Store より御社サービスの SCIM Server へプロビジョニングを行うために、OAuthの認可コード、アクセストークンを取得するためのAPIです。</p>
 
@@ -194,7 +193,7 @@ OPTiM Store より御社サービスの SCIM Server へプロビジョニング�
 <h3 id="sample-request">Sample Request</h3>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>POST /scim/oauth/v1/token
-Host: server.example.com
+Host: your-service.example.com
 Content-Type: application/x-www-form-urlencoded;charset=UTF-8
 
 grant_type=client_credentials&amp;client_id=s6BhdRkqt3&amp;client_secret=7Fjfp0ZBr1KtDRbnfVdmIw
@@ -217,7 +216,7 @@ grant_type=client_credentials&amp;client_id=s6BhdRkqt3&amp;client_secret=7Fjfp0Z
 
 <h3 id="response-code">Response Code</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>201 Created
+<div class="highlighter-rouge"><pre class="highlight"><code>200 OK
 </code></pre>
 </div>
 

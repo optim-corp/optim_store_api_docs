@@ -125,8 +125,7 @@
 
       <div id='site-content' class='body'>
         <div class="col-md-10">
-          
-<h1 id="contract-setup">Contract Setup</h1>
+          <h1 id="contract-setup">Contract Setup</h1>
 
 <p>OPTiM Store のユーザー企業様が御社サービスを利用開始する際に行われる、テナント契約開始処理のAPIです。<br />
 御社サービス側に実装頂き、OPTiM Store よりAPIの呼び出しを行います。</p>
@@ -222,7 +221,7 @@
     </tr>
     <tr>
       <td><strong>contract_jwk</strong></td>
-      <td>string</td>
+      <td>object</td>
       <td>各テナント契約ごとに OPTiM 側で生成される RSA 鍵ペアの公開鍵です。契約開始直後 Provisioning　の自動設定を行う際に必要になります。</td>
     </tr>
     <tr>
@@ -307,7 +306,7 @@
     </tr>
     <tr>
       <td><strong>contract_jwk</strong></td>
-      <td>string</td>
+      <td>object</td>
       <td>各テナント契約ごとに御社サービス側で生成いただく RSA 鍵ペアの公開鍵です。契約開始直後 Federation　の自動設定を行う際に必要になります。</td>
     </tr>
     <tr>

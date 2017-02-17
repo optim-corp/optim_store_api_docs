@@ -125,8 +125,7 @@
 
       <div id='site-content' class='body'>
         <div class="col-md-10">
-          
-<h1 id="saml-service-provider-setup">SAML Service Provider Setup</h1>
+          <h1 id="saml-service-provider-setup">SAML Service Provider Setup</h1>
 
 <p>OPTiM Store へ SAML Service Provider としての登録を行うためのAPIです。<br />
 OPTiM Store では、<a href="/optim_store_api_docs/setup/connect">OpenID Connect Client Setup</a> と同じような方法で、SAML SP 登録を受け付けています。</p>
@@ -143,7 +142,7 @@ OPTiM Store では、<a href="/optim_store_api_docs/setup/connect">OpenID Connec
 
 <ul>
   <li>URLは、OPTiM Store との契約時にご連絡いたします。</li>
-  <li>本章では、https://store-xyz-api.optim.co.jp/saml2/service_providers として記載致します。</li>
+  <li>本章では、https://store-xyz-api.optim.co.jp/api/idp/saml/register として記載致します。</li>
 </ul>
 
 <h3 id="header-parameters">Header Parameters</h3>
@@ -248,7 +247,7 @@ OPTiM Store では、<a href="/optim_store_api_docs/setup/connect">OpenID Connec
 
 <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/contract/api"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz-api.optim.co.jp/saml2/service_providers"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://store-xyz-api.optim.co.jp/api/idp/saml/register"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"entity_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/optim-store"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"nameid_format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"persistent"</span><span class="p">,</span><span class="w">
   </span><span class="nt">"callback_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your-service.example.com/optim-store/callback"</span><span class="p">,</span><span class="w">

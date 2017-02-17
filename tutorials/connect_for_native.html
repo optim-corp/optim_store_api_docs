@@ -125,8 +125,7 @@
 
       <div id='site-content' class='body'>
         <div class="col-md-10">
-          
-<h1 id="openid-connect-">OpenID Connect 実装チュートリアル</h1>
+          <h1 id="openid-connect-">OpenID Connect 実装チュートリアル</h1>
 
 <p>ここでは OpenID Connect を使った ID 連携をチュートリアル形式で実装していきます。</p>
 
@@ -157,7 +156,7 @@ Web ブラウザを通じて利用される SaaS サービスの場合は、本�
     </tr>
     <tr>
       <td><strong>redirect_uris</strong></td>
-      <td><code class="highlighter-rouge">["com.example.your-service://optim-store/callback"]</code></td>
+      <td><code class="highlighter-rouge">["https://your-service.example.com/optim-store/callback"]</code></td>
     </tr>
   </tbody>
 </table>
@@ -188,7 +187,7 @@ Web ブラウザを通じて利用される SaaS サービスの場合は、本�
     </tr>
     <tr>
       <td><strong>redirect_uri</strong></td>
-      <td><code class="highlighter-rouge">com.example.your-service://optim-store/callback</code></td>
+      <td><code class="highlighter-rouge">https://your-service.example.com/optim-store/callback</code></td>
     </tr>
     <tr>
       <td><strong>state</strong></td>
@@ -207,7 +206,7 @@ Web ブラウザを通じて利用される SaaS サービスの場合は、本�
 
 <p>実際にリダイレクト先になる URL は以下のようになります。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>https://store-xyz-federation.optim.co.jp/connect/authorization?client_id=7a05a846d3dc5a860013ea7fe201e025&amp;response_type=code&amp;scope=openid&amp;redirect_uri=com.example.your-service%3A%2F%2Foptim-store%2Fcallback&amp;state=590d36e1688aa02f863c78cae78d5dc8&amp;nonce=72cf7cf3a0010c45912ce3562d25e2c3&amp;code_challenge=9F9PvYqHmv0Yo42FKBkoTfYI7LPeSoKWIoLxb75VieY
+<div class="highlighter-rouge"><pre class="highlight"><code>https://store-xyz-federation.optim.co.jp/connect/authorization?client_id=7a05a846d3dc5a860013ea7fe201e025&amp;response_type=code&amp;scope=openid&amp;redirect_uri=https%3A%2F%2Fyour-service.example.com%2Foptim-store%2Fcallback&amp;state=590d36e1688aa02f863c78cae78d5dc8&amp;nonce=72cf7cf3a0010c45912ce3562d25e2c3&amp;code_challenge=9F9PvYqHmv0Yo42FKBkoTfYI7LPeSoKWIoLxb75VieY
 </code></pre>
 </div>
 
@@ -242,7 +241,7 @@ Web ブラウザを通じて利用される SaaS サービスの場合は、本�
 
 <h2 id="step2-authorization-response-">Step2. Authorization Response の受信</h2>
 
-<p>OPTiM Store 側でのユーザー認証等が正常に終了すると、<strong>redirect_uri</strong> として指定された <code class="highlighter-rouge">com.example.your-service://optim-store/callback</code> に <strong>code</strong> と <strong>state</strong> が付与された状態で、ユーザーがリダイレクトして戻されます。</p>
+<p>OPTiM Store 側でのユーザー認証等が正常に終了すると、<strong>redirect_uri</strong> として指定された <code class="highlighter-rouge">https://your-service.example.com/optim-store/callback</code> に <strong>code</strong> と <strong>state</strong> が付与された状態で、ユーザーがリダイレクトして戻されます。</p>
 
 <p>ここでは以下のような値が <strong>code</strong> として返されるものとします。</p>
 
@@ -263,7 +262,7 @@ Web ブラウザを通じて利用される SaaS サービスの場合は、本�
 
 <p>すると、ユーザーは以下の URL にリダイレクトされ、御社 Native App に戻されます。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>com.example.your-service://optim-store/callback?code=f467ccbaca74f35da15c265616a059cc1ea7a31d2cde0a119e5e8d6714cc3e68&amp;state=590d36e1688aa02f863c78cae78d5dc8
+<div class="highlighter-rouge"><pre class="highlight"><code>https://your-service.example.com/optim-store/callback?code=f467ccbaca74f35da15c265616a059cc1ea7a31d2cde0a119e5e8d6714cc3e68&amp;state=590d36e1688aa02f863c78cae78d5dc8
 </code></pre>
 </div>
 
@@ -307,7 +306,7 @@ OAuth PKCE 対応を行っている場合は、同時に <strong>code_verifier</
     </tr>
     <tr>
       <td><strong>redirect_uri</strong></td>
-      <td><code class="highlighter-rouge">com.example.your-service://optim-store/callback</code></td>
+      <td><code class="highlighter-rouge">https://your-service.example.com/optim-store/callback</code></td>
     </tr>
     <tr>
       <td><strong>code_verifier</strong></td>
@@ -322,7 +321,7 @@ OAuth PKCE 対応を行っている場合は、同時に <strong>code_verifier</
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded</span>
 <span class="na">HOST</span><span class="p">:</span> <span class="s">store-xyz-federation.optim.co.jp</span>
 
-client_id=7a05a846d3dc5a860013ea7fe201e025&amp;client_secret=d9fccaa5cdf30f86c6efe73f25774e9a625ceaa9aa26de7e9f364370a71820d5&amp;grant_type=authorization_code&amp;code=f467ccbaca74f35da15c265616a059cc1ea7a31d2cde0a119e5e8d6714cc3e68&amp;redirect_uri=com.example.your-service%3A%2F%2Foptim-store%2Fcallback&amp;code_verifier=7823499fd8e7a73763e4e8ce00cb1bd3
+client_id=7a05a846d3dc5a860013ea7fe201e025&amp;client_secret=d9fccaa5cdf30f86c6efe73f25774e9a625ceaa9aa26de7e9f364370a71820d5&amp;grant_type=authorization_code&amp;code=f467ccbaca74f35da15c265616a059cc1ea7a31d2cde0a119e5e8d6714cc3e68&amp;redirect_uri=https%3A%2F%2Fyour-service.example.com%2Foptim-store%2Fcallback&amp;code_verifier=7823499fd8e7a73763e4e8ce00cb1bd3
 </code></pre>
 </div>
 
